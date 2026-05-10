@@ -1,8 +1,17 @@
 import React from "react";
 import { Platform, StyleSheet, TextInput, View } from "react-native";
 
-const Input = ({ value, onChangeText, placeholder }: { value: string; onChangeText: (text: string) => void; placeholder: string }) => {
+type InputProps = {
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  type?: string;
+};
+
+const Input = ({ value, onChangeText, placeholder, type }: InputProps) => {
   const [isFocused, setIsFocused] = React.useState(false);
+  const isPassword = type === "password";
+  const isEmail = type === "email";
   return (
     <View>
       <TextInput
@@ -16,6 +25,7 @@ const Input = ({ value, onChangeText, placeholder }: { value: string; onChangeTe
           },
           Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : {},
         ]}
+        textContentType={isPassword ? "password" : isEmail ? "emailAddress" : "none"}
         placeholderTextColor="gray"
         underlineColorAndroid="transparent"
         onFocus={() => setIsFocused(true)}
