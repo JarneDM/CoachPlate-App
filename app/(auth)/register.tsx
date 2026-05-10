@@ -1,15 +1,19 @@
-import React from "react";
+import { useState, useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
 import Input from "../components/Input";
+import { UserTypeContext } from "@/context/UserTypeContext";
 
 function RegisterForm() {
-  const [fullName, setFullName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [acceptedTerms, setAcceptedTerms] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState("");
+  // TODO(clean code): put this in a component
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [coachCode, setCoachCode] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [userType, setUserType] = useContext(UserTypeContext);
 
   const isDisabled = loading || !fullName.trim() || !email.trim() || !password || !acceptedTerms;
 
@@ -27,14 +31,26 @@ function RegisterForm() {
     }
 
     setLoading(true);
-    console.log({ fullName, email, password, acceptedTerms });
+    console.log({ fullName, email, password, acceptedTerms, userType });
+    setLoading(false);
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Start your free account</Text>
-        <Text style={styles.subtitle}>Get immediate access to smart meal and training planning.</Text>
+      <View style={styles.optionsContainer}>
+        <TouchableOpacity
+          style={[styles.optionButton, userType === "coach" && styles.optionButtonSelected]}
+          onPress={() => setUserType("coach")}
+        >
+          <Text style={styles.optionText}>Coach</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.optionButton, userType === "client" && styles.optionButtonSelected]}
+          onPress={() => setUserType("client")}
+        >
+          <Text style={styles.optionText}>Client</Text>
+        </TouchableOpacity>
       </View>
 
       {error ? (
@@ -45,20 +61,36 @@ function RegisterForm() {
 
       <View style={styles.fields}>
         <View>
-          <Text style={styles.label}>Full name</Text>
+          <View style={styles.labelBox}>
+            <Text style={styles.label}>Full name</Text>
+            <Text style={styles.required}>*</Text>
+          </View>
           <Input value={fullName} onChangeText={setFullName} placeholder="Jan Janssen" />
         </View>
 
         <View>
-          <Text style={styles.label}>Email address</Text>
+          <View style={styles.labelBox}>
+            <Text style={styles.label}>Email address</Text>
+            <Text style={styles.required}>*</Text>
+          </View>
           <Input value={email} onChangeText={setEmail} placeholder="your@email.com" type="email" />
         </View>
 
         <View>
-          <Text style={styles.label}>Password</Text>
+          <View style={styles.labelBox}>
+            <Text style={styles.label}>Password</Text>
+            <Text style={styles.required}>*</Text>
+          </View>
           <Input value={password} onChangeText={setPassword} placeholder="At least 8 characters" type="password" />
           <Text style={styles.hint}>At least 8 characters</Text>
         </View>
+
+        {userType === "client" && (
+          <View>
+            <Text style={styles.label}>Coach Code</Text>
+            <Input value={coachCode} onChangeText={setCoachCode} placeholder="Enter your coach's code" />
+          </View>
+        )}
 
         <TouchableOpacity
           style={[styles.checkboxRow, acceptedTerms && styles.checkboxRowChecked]}
@@ -69,9 +101,7 @@ function RegisterForm() {
             {acceptedTerms && <Text style={styles.checkmark}>✓</Text>}
           </View>
           <Text style={styles.termsText}>
-            I agree to the{" "}
-            <Text style={styles.termsLink}>terms and conditions</Text>
-            {" "}and the{" "}
+            I agree to the <Text style={styles.termsLink}>terms and conditions</Text> and the{" "}
             <Text style={styles.termsLink}>privacy policy</Text>.
           </Text>
         </TouchableOpacity>
@@ -82,7 +112,7 @@ function RegisterForm() {
           disabled={isDisabled}
           activeOpacity={0.85}
         >
-          <Text style={styles.buttonText}>{loading ? "Creating account..." : "Start for free"}</Text>
+          <Text style={styles.buttonText}>{loading ? "Creating account..." : "Create account"}</Text>
         </TouchableOpacity>
       </View>
 
@@ -103,16 +133,33 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 4,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#0f172a",
-    letterSpacing: -0.3,
+  labelBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
-  subtitle: {
-    marginTop: 4,
+  required: {
+    top: -5,
+    color: "#ef4444",
+  },
+  optionsContainer: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
+  optionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: "center",
+    borderBottomColor: "#16a34a",
+  },
+  optionButtonSelected: {
+    borderBottomWidth: 3,
+  },
+  optionText: {
     fontSize: 14,
-    color: "#64748b",
+    fontWeight: "bold",
+    color: "#334155",
   },
   errorBanner: {
     backgroundColor: "#fef2f2",

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Link, router } from "expo-router";
@@ -22,7 +22,7 @@ function Loginform() {
     },
   });
 
-  const [loading] = React.useState(false);
+  const [loading] = useState(false);
 
   const onSubmit = async (data: LoginProps) => {
     data.email = data.email.toLowerCase();
