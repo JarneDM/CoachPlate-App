@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
-import NavButton from "./components/NavButton";
+import NavButton from "components/NavButton";
 
 export default function Index() {
   return (

@@ -1,6 +1,6 @@
 import { Slot } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import { UserTypeContext } from "@/context/UserTypeContext";
@@ -12,6 +12,8 @@ function AuthLayout() {
 
   const [userType, setUserType] = useState<"coach" | "client">("coach");
 
+  const isWeb = Platform.OS === "web";
+
   if (!fontsLoaded) return null;
   return (
     <UserTypeContext.Provider value={[userType, setUserType]}>
@@ -21,12 +23,12 @@ function AuthLayout() {
             <Text style={styles.capsuleText}>CoachPlate</Text>
           </View>
           {userType === "coach" ? (
-            <View>
+            <View style={isWeb ? { marginBottom: 10 } : { marginBottom: -20 }}>
               <Text style={styles.header}>Work smarter as a coach</Text>
               <Text style={styles.subheader}>Plan nutrition and training in minutes, not hours.</Text>
             </View>
           ) : (
-            <View>
+            <View style={isWeb ? { marginBottom: 10 } : { marginBottom: -20 }}>
               <Text style={styles.header}>Make progress every day</Text>
               <Text style={styles.subheader}>Follow a personalized plan built just for you.</Text>
             </View>
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   capsuleText: {
     color: "#388357",
