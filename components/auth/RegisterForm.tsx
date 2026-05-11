@@ -1,38 +1,63 @@
 import { useState, useContext } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import Input from "../Input";
 import { UserTypeContext } from "@/context/UserTypeContext";
+import { Controller, set, useForm } from "react-hook-form";
+import { supabase } from "@/lib/supabase/supabase";
+
+interface RegisterProps {
+  fullName: string;
+  email: string;
+  password: string;
+  coachCode?: string;
+}
 
 export const RegisterForm = () => {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [coachCode, setCoachCode] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterProps>({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      coachCode: "",
+    },
+  });
+  const [userType, setUserType] = useContext(UserTypeContext);
+  const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [userType, setUserType] = useContext(UserTypeContext);
+  const isDisabled = !acceptedTerms;
 
-  const isDisabled = loading || !fullName.trim() || !email.trim() || !password || !acceptedTerms;
-
-  function handleRegister() {
-    setError("");
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
-    if (!acceptedTerms) {
-      setError("You must accept the terms and conditions to register");
-      return;
-    }
-
-    setLoading(true);
-    console.log({ fullName, email, password, acceptedTerms, userType });
+const onSubmit = async (data: RegisterProps) => {
+  setLoading(true);
+  const email = data.email.toLowerCase();
+  const { error: authError } = await supabase.auth.signUp({
+    email: email,
+    password: data.password,
+    options: {
+      emailRedirectTo: `https://www.coachplate.com/auth/callback`,
+      data: {
+        full_name: data.fullName,
+        terms_accepted: true,
+        terms_accepted_at: acceptedTerms ? new Date().toISOString() : null,
+        terms_version: "2026-03-29",
+        role: userType,
+      },
+    },
+  });
+  if (authError) {
+    console.error("Error signing up:", authError);
+    setError(authError.message);
     setLoading(false);
+    return;
   }
+  userType === "coach" ? router.push("/(coach)/dashboard") : router.push("/(client)/dashboard");
+  setLoading(false);
+};
 
   return (
     <View style={styles.container}>
@@ -64,7 +89,12 @@ export const RegisterForm = () => {
             <Text style={styles.label}>Full name</Text>
             <Text style={styles.required}>*</Text>
           </View>
-          <Input value={fullName} onChangeText={setFullName} placeholder="Jan Janssen" />
+          <Controller
+            control={control}
+            name="fullName"
+            rules={{ required: "Full name is required" }}
+            render={({ field: { onChange, value } }) => <Input value={value} onChangeText={onChange} placeholder="Jan Janssen" />}
+          />
         </View>
 
         <View>
@@ -72,7 +102,14 @@ export const RegisterForm = () => {
             <Text style={styles.label}>Email address</Text>
             <Text style={styles.required}>*</Text>
           </View>
-          <Input value={email} onChangeText={setEmail} placeholder="your@email.com" type="email" />
+          <Controller
+            control={control}
+            name="email"
+            rules={{ required: "Email is required" }}
+            render={({ field: { onChange, value } }) => (
+              <Input value={value} onChangeText={onChange} placeholder="your@email.com" type="email" />
+            )}
+          />
         </View>
 
         <View>
@@ -80,14 +117,27 @@ export const RegisterForm = () => {
             <Text style={styles.label}>Password</Text>
             <Text style={styles.required}>*</Text>
           </View>
-          <Input value={password} onChangeText={setPassword} placeholder="At least 8 characters" type="password" />
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: "Password is required", minLength: { value: 8, message: "Password must be at least 8 characters" } }}
+            render={({ field: { onChange, value } }) => (
+              <Input value={value} onChangeText={onChange} placeholder="At least 8 characters" type="password" />
+            )}
+          />
           <Text style={styles.hint}>At least 8 characters</Text>
         </View>
 
         {userType === "client" && (
           <View>
             <Text style={styles.label}>Coach Code</Text>
-            <Input value={coachCode} onChangeText={setCoachCode} placeholder="Enter your coach's code" />
+            <Controller
+              control={control}
+              name="coachCode"
+              render={({ field: { onChange, value } }) => (
+                <Input value={value} onChangeText={onChange} placeholder="Enter your coach's code" />
+              )}
+            />
           </View>
         )}
 
@@ -107,7 +157,7 @@ export const RegisterForm = () => {
 
         <TouchableOpacity
           style={[styles.button, isDisabled && styles.buttonDisabled]}
-          onPress={handleRegister}
+          onPress={handleSubmit(onSubmit)}
           disabled={isDisabled}
           activeOpacity={0.85}
         >

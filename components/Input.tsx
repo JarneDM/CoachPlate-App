@@ -2,7 +2,7 @@ import React from "react";
 import { Platform, StyleSheet, TextInput, View } from "react-native";
 
 type InputProps = {
-  value: string;
+  value?: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
   type?: string;

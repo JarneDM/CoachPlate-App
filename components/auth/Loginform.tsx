@@ -33,6 +33,7 @@ function Loginform() {
     if (error) {
       console.error("Error signing in:", error);
     }
+    //TODO(auth): fetch user role from meta data and redirect accordingly
     router.push("/(coach)/dashboard");
   };
 
