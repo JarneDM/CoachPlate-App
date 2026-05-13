@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Link, router } from "expo-router";
 import Input from "../Input";
 import { supabase } from "lib/supabase/supabase";
+import { UserTypeContext } from "@/context/UserTypeContext";
 
 type LoginProps = {
   email: string;
@@ -23,18 +24,27 @@ function Loginform() {
   });
 
   const [loading] = useState(false);
+  const { userType } = useContext(UserTypeContext);
 
   const onSubmit = async (data: LoginProps) => {
     data.email = data.email.toLowerCase();
-    const { error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-    if (error) {
+    try {
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (error) {
+        throw new Error("There was an error signing in: " + error.message);
+        return;
+      }
+      const role = user?.user_metadata?.role;
+      role === "coach" ? router.push("/(coach)/dashboard") : router.push("/(client)/dashboard");
+    } catch (error) {
       console.error("Error signing in:", error);
     }
-    //TODO(auth): fetch user role from meta data and redirect accordingly
-    router.push("/(coach)/dashboard");
   };
 
   return (

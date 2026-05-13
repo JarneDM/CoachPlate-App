@@ -16,7 +16,7 @@ function AuthLayout() {
 
   if (!fontsLoaded) return null;
   return (
-    <UserTypeContext.Provider value={[userType, setUserType]}>
+    <UserTypeContext.Provider value={{ userType, setUserType }}>
       <SafeAreaView style={styles.container}>
         <View style={styles.hero}>
           <View style={styles.capsule}>

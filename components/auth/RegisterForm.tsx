@@ -26,7 +26,7 @@ export const RegisterForm = () => {
       coachCode: "",
     },
   });
-  const [userType, setUserType] = useContext(UserTypeContext);
+  const { userType, setUserType } = useContext(UserTypeContext);
   const [error, setError] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
