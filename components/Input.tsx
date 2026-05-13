@@ -2,7 +2,7 @@ import React from "react";
 import { Platform, StyleSheet, TextInput, View } from "react-native";
 
 type InputProps = {
-  value: string;
+  value?: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
   type?: string;
@@ -21,11 +21,14 @@ const Input = ({ value, onChangeText, placeholder, type }: InputProps) => {
         style={[
           styles.input,
           {
-            borderColor: isFocused ? "green" : "gray",
+            borderColor: isFocused ? "#22c55e" : "#e2e8f0",
+            shadowColor: isFocused ? "#22c55e" : "#000",
+            shadowOpacity: isFocused ? 0.2 : 0.05,
           },
           Platform.OS === "web" ? ({ outlineStyle: "none" } as any) : {},
         ]}
-        textContentType={isPassword ? "password" : isEmail ? "emailAddress" : "none"}
+        secureTextEntry={isPassword}
+        inputMode={isEmail ? "email" : "text"}
         placeholderTextColor="gray"
         underlineColorAndroid="transparent"
         onFocus={() => setIsFocused(true)}
@@ -37,14 +40,20 @@ const Input = ({ value, onChangeText, placeholder, type }: InputProps) => {
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
-    borderWidth: 2,
-    borderColor: "gray",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    width: 200,
-    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    width: "100%",
+    fontSize: 14,
+    color: "#0f172a",
+    backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
 });
 

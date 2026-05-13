@@ -1,8 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-// TODO(auth): add onPress functionality to add functionality to the buttons
-
 const NavButton = ({ content, onPress }: { content: string; onPress: () => void }) => {
   return (
     <View>
