@@ -1,13 +1,19 @@
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import { RegisterForm } from "components/auth/RegisterForm";
 
-function register() {
+export default function Register() {
   return (
-    <SafeAreaView>
+    <View style={styles.container}>
       <RegisterForm />
-    </SafeAreaView>
+    </View>
   );
 }
 
-export default register;
+const styles = StyleSheet.create({
+  container: {
+    gap: 20,
+  },
+});

@@ -1,9 +1,11 @@
-import { Slot } from "expo-router";
-import React, { useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { router, Slot } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import { UserTypeContext } from "@/context/UserTypeContext";
+import { usePathname } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 
 function AuthLayout() {
   const [fontsLoaded] = useFonts({
@@ -11,7 +13,13 @@ function AuthLayout() {
   });
 
   const [userType, setUserType] = useState<"coach" | "client">("coach");
+  const pathname = usePathname();
 
+  useEffect(() => {
+    if (pathname === "/login") {
+      setUserType("coach");
+    }
+  }, [pathname]);
   const isWeb = Platform.OS === "web";
 
   if (!fontsLoaded) return null;
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 24,
     paddingHorizontal: 16,
-    gap: 16,
+    gap: 40,
   },
   hero: {
     alignItems: "center",
