@@ -25,7 +25,7 @@ export default function DashboardCoach() {
         supabase.from("coaches").select("*").eq("id", user.id).single(),
         supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
         supabase.from("meal_plans").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
-        supabase.from("clients").select("id, full_name, goal").eq("coach_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("clients").select("id, full_name, goal").eq("coach_id", user.id).order("created_at", { ascending: false }).limit(3),
       ]);
 
       setCoach(coachResult.data);
@@ -52,7 +52,6 @@ export default function DashboardCoach() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Text style={styles.welcomeText}>Welcome back, {coach?.full_name?.split(" ")[0]}!</Text>
-            <Hand size={20} color="#16a34a" />
           </View>
           <Text style={styles.subheader}>Here is an overview of your CoachPlate activity.</Text>
         </View>
@@ -71,27 +70,32 @@ export default function DashboardCoach() {
           </View>
 
           {recentClients.length > 0 ? (
-            recentClients.map((client, index) => (
-              <View key={client.id} style={[styles.clientRow, index === recentClients.length - 1 && { borderBottomWidth: 0 }]}>
-                <View style={styles.clientLeft}>
-                  <View style={styles.avatar}>
-                    <Text style={styles.avatarText}>{client.full_name.charAt(0).toUpperCase()}</Text>
+            <View>
+              {recentClients.map((client, index) => (
+                <View key={client.id} style={[styles.clientRow, index === recentClients.length - 1 && { borderBottomWidth: 0 }]}>
+                  <View style={styles.clientLeft}>
+                    <View style={styles.avatar}>
+                      <Text style={styles.avatarText}>{client.full_name.charAt(0).toUpperCase()}</Text>
+                    </View>
+                    <View>
+                      <Text style={styles.clientName}>{client.full_name}</Text>
+                      <Text style={styles.clientGoal}>{client.goal ?? "No goal set"}</Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text style={styles.clientName}>{client.full_name}</Text>
-                    <Text style={styles.clientGoal}>{client.goal ?? "No goal set"}</Text>
-                  </View>
+                  <TouchableOpacity>
+                    <Text style={styles.linkText}>View →</Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
-                  <Text style={styles.linkText}>View →</Text>
-                </TouchableOpacity>
-              </View>
-            ))
+              ))}
+              <TouchableOpacity style={styles.addButton}>
+                <Text style={styles.addButtonText}>Add a client</Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <View style={styles.emptyState}>
               <Users size={40} color="#d1d5db" />
               <Text style={styles.emptyText}>You have not added any clients yet.</Text>
-              <TouchableOpacity style={styles.addButton}>
+              <TouchableOpacity style={styles.addNewButton}>
                 <Text style={styles.addButtonText}>Add first client</Text>
               </TouchableOpacity>
             </View>
@@ -148,7 +152,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   header: {
-    marginBottom: 4,
+    marginBottom: 20,
   },
   headerRow: {
     flexDirection: "row",
@@ -278,6 +282,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginTop: 8,
+    alignItems: "center",
+  },
+  addNewButton: {
+    backgroundColor: "#16a34a",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     marginTop: 4,
   },
   addButtonText: {
@@ -305,6 +317,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.04,
     shadowRadius: 4,
     elevation: 1,
+    height: 80,
   },
   quickActionIcon: {
     backgroundColor: "#f0fdf4",
