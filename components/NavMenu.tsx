@@ -12,16 +12,7 @@ import {
 import { usePathname, router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase/supabase";
-import {
-  Menu,
-  X,
-  LayoutDashboard,
-  Users,
-  CalendarDays,
-  Dumbbell,
-  Settings,
-  LogOut,
-} from "lucide-react-native";
+import { Menu, X, LayoutDashboard, Users, CalendarDays, Dumbbell, Settings, LogOut, LibraryBig, PhoneCall } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const DRAWER_WIDTH = Dimensions.get("window").width * 0.8;
@@ -29,8 +20,10 @@ const DRAWER_WIDTH = Dimensions.get("window").width * 0.8;
 const NAV_ITEMS = [
   { href: "/(coach)/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/(coach)/clients", label: "Clients", icon: Users },
+  { href: "/(coach)/appointments", label: "Appointments", icon: PhoneCall },
   { href: "/(coach)/meal-plans", label: "Meal Plans", icon: CalendarDays },
   { href: "/(coach)/training-plans", label: "Training Plans", icon: Dumbbell },
+  { href: "/(coach)/recipes", label: "Recipes", icon: LibraryBig },
   { href: "/(coach)/settings", label: "Settings", icon: Settings },
 ];
 
