@@ -35,6 +35,7 @@ export function PlanCard({ title, icon, plans, emptyText, emptyIcon }: PlanCardP
           <Text style={styles.emptyText}>{emptyText}</Text>
         </View>
       ) : (
+        // TODO: link to plan details page
         <View>
           {plans.map((plan, index) => (
             <TouchableOpacity
