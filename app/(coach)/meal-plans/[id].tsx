@@ -478,7 +478,6 @@ function RecipePicker({
               placeholder="Search recipe..."
               placeholderTextColor="#9ca3af"
               style={picker.searchInput}
-              autoFocus
             />
           </View>
 
@@ -490,9 +489,7 @@ function RecipePicker({
             keyboardShouldPersistTaps="handled"
             ListEmptyComponent={
               <View style={picker.empty}>
-                <Text style={picker.emptyText}>
-                  {recipes.length === 0 ? "No recipes yet" : "No recipes found"}
-                </Text>
+                <Text style={picker.emptyText}>{recipes.length === 0 ? "No recipes yet" : "No recipes found"}</Text>
               </View>
             }
             renderItem={({ item: recipe }) => {
@@ -505,11 +502,7 @@ function RecipePicker({
                   activeOpacity={0.7}
                 >
                   <View style={[picker.recipeIcon, isCoach ? picker.recipeIconCoach : picker.recipeIconPublic]}>
-                    {isCoach ? (
-                      <NotepadText size={14} color="#6b7280" />
-                    ) : (
-                      <ChefHat size={14} color="#16a34a" />
-                    )}
+                    {isCoach ? <NotepadText size={14} color="#6b7280" /> : <ChefHat size={14} color="#16a34a" />}
                   </View>
                   <View style={picker.recipeText}>
                     <Text style={picker.recipeName} numberOfLines={1}>
@@ -559,11 +552,7 @@ function RecipePicker({
                 </View>
               )}
 
-              <TouchableOpacity
-                onPress={() => onSelect(selected.id, servings)}
-                style={picker.confirmBtn}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity onPress={() => onSelect(selected.id, servings)} style={picker.confirmBtn} activeOpacity={0.8}>
                 <Text style={picker.confirmText}>Add to {MEAL_LABELS[mealType].toLowerCase()}</Text>
               </TouchableOpacity>
             </View>
@@ -729,12 +718,14 @@ const picker = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(17,24,39,0.5)",
     justifyContent: "flex-end",
+    height: "90%",
   },
   sheet: {
     backgroundColor: "#ffffff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: "85%",
+    maxHeight: "100%",
+    height: "80%",
   },
   handle: {
     width: 36,
@@ -778,7 +769,7 @@ const picker = StyleSheet.create({
   },
 
   searchInput: { flex: 1, fontSize: 14, color: "#111827" },
-  list: { maxHeight: 280 },
+  list: { maxHeight: "auto" },
   listContent: { paddingHorizontal: 12, paddingBottom: 8, gap: 4 },
   empty: { alignItems: "center", paddingVertical: 32 },
   emptyText: { fontSize: 14, color: "#9ca3af" },
