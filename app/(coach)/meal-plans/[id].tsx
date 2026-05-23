@@ -567,6 +567,7 @@ function MacroPreviewPill({ value, label, color }: { value: number; label: strin
   );
 }
 
+// TODO(cleanup): move to separate files
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#f9fafb" },
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#f9fafb" },
