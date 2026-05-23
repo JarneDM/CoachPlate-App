@@ -14,7 +14,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { supabase } from "@/lib/supabase/supabase";
 import { ArrowLeft, Plus, Search, X, ChefHat, NotepadText, User, Clock } from "lucide-react-native";
 
-
+// TODO(cleanup): move types to separate file
 type Recipe = {
   id: string;
   name: string;
@@ -93,6 +93,7 @@ export default function WeekPlanScreen() {
 
   const userId = useRef<string | null>(null);
 
+  // TODO(cleanup): make custom hook
   const fetchPlan = useCallback(async () => {
     const { data: raw } = await supabase
       .from("meal_plans")
@@ -110,24 +111,25 @@ export default function WeekPlanScreen() {
             )
           )
         )
-      `
+      `,
       )
       .eq("id", id)
       .maybeSingle();
 
     if (!raw) return;
 
-    const sorted = [...((raw as any).meal_plan_days ?? [])].sort(
-      (a: Day, b: Day) => a.day_number - b.day_number
-    );
+    const sorted = [...((raw as any).meal_plan_days ?? [])].sort((a: Day, b: Day) => a.day_number - b.day_number);
 
     setPlan(raw as any);
     setDays(sorted);
     setLoading(false);
   }, [id]);
 
+  // TODO:(cleanup): make custom hook
   const fetchRecipes = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
     userId.current = user.id;
 
@@ -180,6 +182,7 @@ export default function WeekPlanScreen() {
     setSaving(false);
   }
 
+  // TODO(cleanup): check to see if we can use api route for this and use tanstack query to call the api
   async function removeRecipe(mealRecipeId: string) {
     setSaving(true);
     await supabase.from("meal_recipes").delete().eq("id", mealRecipeId);
@@ -197,11 +200,12 @@ export default function WeekPlanScreen() {
         carbs: acc.carbs + (mr.recipes.carbs_g ?? 0) * mr.servings,
         fat: acc.fat + (mr.recipes.fat_g ?? 0) * mr.servings,
       }),
-      { calories: 0, protein: 0, carbs: 0, fat: 0 }
+      { calories: 0, protein: 0, carbs: 0, fat: 0 },
     );
   };
 
   if (loading) {
+    // TODO(cleanup): make shared loading component
     return (
       <View style={styles.center}>
         <ActivityIndicator color="#16a34a" />
@@ -209,6 +213,7 @@ export default function WeekPlanScreen() {
     );
   }
 
+  // TODO(cleanup): make shared not found component
   if (!plan) {
     return (
       <View style={styles.center}>
@@ -240,10 +245,9 @@ export default function WeekPlanScreen() {
                   <Text style={styles.topBarMetaDot}>·</Text>
                   <Clock size={11} color="#9ca3af" />
                   <Text style={styles.topBarMetaText}>
+                    {/* TODO(cleanup): use FormatDate helper */}
                     {new Date(plan.start_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                    {plan.end_date
-                      ? ` → ${new Date(plan.end_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
-                      : ""}
+                    {plan.end_date ? ` → ${new Date(plan.end_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : ""}
                   </Text>
                 </>
               )}
@@ -253,12 +257,8 @@ export default function WeekPlanScreen() {
         {saving && <ActivityIndicator size="small" color="#16a34a" />}
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.dayBar}
-        contentContainerStyle={styles.dayBarContent}
-      >
+      {/* TODO(cleanup): move to separate component */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dayBar} contentContainerStyle={styles.dayBarContent}>
         {days.map((day, index) => {
           const active = index === selectedDayIndex;
           const t = dayTotals(day);
@@ -270,9 +270,7 @@ export default function WeekPlanScreen() {
               style={[styles.dayTab, active && styles.dayTabActive]}
               activeOpacity={0.7}
             >
-              <Text style={[styles.dayTabLabel, active && styles.dayTabLabelActive]}>
-                {DAY_NAMES[day.day_number - 1]}
-              </Text>
+              <Text style={[styles.dayTabLabel, active && styles.dayTabLabelActive]}>{DAY_NAMES[day.day_number - 1]}</Text>
               {day.date && (
                 <Text style={[styles.dayTabDate, active && styles.dayTabDateActive]}>
                   {new Date(day.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
@@ -284,12 +282,9 @@ export default function WeekPlanScreen() {
         })}
       </ScrollView>
 
+      {/* TODO(cleanup): move to separate component */}
       {currentDay ? (
-        <ScrollView
-          style={styles.dayScroll}
-          contentContainerStyle={styles.dayScrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView style={styles.dayScroll} contentContainerStyle={styles.dayScrollContent} showsVerticalScrollIndicator={false}>
           {totals && (
             <View style={styles.macroCard}>
               {calorieProgress !== null && (
@@ -304,12 +299,7 @@ export default function WeekPlanScreen() {
                         styles.progressFill,
                         {
                           width: `${calorieProgress}%` as any,
-                          backgroundColor:
-                            calorieProgress >= 90
-                              ? "#22c55e"
-                              : calorieProgress >= 60
-                              ? "#eab308"
-                              : "#ef4444",
+                          backgroundColor: calorieProgress >= 90 ? "#22c55e" : calorieProgress >= 60 ? "#eab308" : "#ef4444",
                         },
                       ]}
                     />
@@ -365,6 +355,7 @@ export default function WeekPlanScreen() {
   );
 }
 
+// TODO(cleanup): move to separate component
 function MacroPill({ label, value, unit, color }: { label: string; value: number; unit: string; color: string }) {
   return (
     <View style={styles.macroPill}>
@@ -377,6 +368,7 @@ function MacroPill({ label, value, unit, color }: { label: string; value: number
   );
 }
 
+// TODO(cleanup): move to separate component
 function MealSlot({
   mealType,
   label,
@@ -433,6 +425,7 @@ function MealSlot({
   );
 }
 
+// TODO(cleanup): move to separate component
 function RecipePicker({
   recipes,
   mealType,
@@ -545,6 +538,7 @@ function RecipePicker({
 
               {selected.calories && (
                 <View style={picker.macroPreview}>
+                  {/* TODO(cleanup): make Math.round helper fn */}
                   <MacroPreviewPill value={Math.round(selected.calories * servings)} label="kcal" color="#f97316" />
                   <MacroPreviewPill value={Math.round((selected.protein_g ?? 0) * servings)} label="P" color="#3b82f6" />
                   <MacroPreviewPill value={Math.round((selected.carbs_g ?? 0) * servings)} label="C" color="#eab308" />
@@ -563,6 +557,7 @@ function RecipePicker({
   );
 }
 
+// TODO(cleanup): move to separate component
 function MacroPreviewPill({ value, label, color }: { value: number; label: string; color: string }) {
   return (
     <View style={picker.previewPill}>

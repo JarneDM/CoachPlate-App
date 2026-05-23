@@ -26,6 +26,7 @@ export default function MealPlansScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // TODO(cleanup): make custom hook
   const fetchPlans = useCallback(async () => {
     const {
       data: { user },
@@ -42,7 +43,7 @@ export default function MealPlansScreen() {
       (data ?? []).map((plan) => ({
         ...plan,
         clients: Array.isArray(plan.clients) ? (plan.clients[0] ?? null) : plan.clients,
-      })) as MealPlan[]
+      })) as MealPlan[],
     );
     setLoading(false);
     setRefreshing(false);
@@ -57,8 +58,8 @@ export default function MealPlansScreen() {
     fetchPlans();
   };
 
-  const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  // TODO(cleanup): move to utils or helpers
+  const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
   if (loading) {
     return (
