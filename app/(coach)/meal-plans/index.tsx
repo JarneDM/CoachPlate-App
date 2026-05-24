@@ -9,6 +9,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { CalendarDays, User, Clock, ArrowRight } from "lucide-react-native";
 import { useMealPlans } from "@/hooks/useMealPlans";
 import { formatDate } from "@/utils/formatDate";
@@ -32,8 +33,15 @@ export default function MealPlansScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#16a34a" />}
     >
       <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Meal Plans</Text>
+        <View style={styles.headerInner}>
+          <View style={styles.headerRow}>
+            <Text style={styles.title}>Meal Plans</Text>
+            <TouchableOpacity onPress={() => router.push(`/(coach)/meal-plans/new`)} activeOpacity={0.8}>
+              <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.newPlanButton}>
+                <Text style={styles.newPlanButtonText}>New Plan</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.subtitle}>
             {plans.length} {plans.length === 1 ? "plan" : "plans"} created
           </Text>
@@ -76,9 +84,7 @@ export default function MealPlansScreen() {
                   </View>
                   <View style={styles.badgeRow}>
                     <View style={[styles.badge, plan.is_active ? styles.badgeActive : styles.badgeInactive]}>
-                      <Text
-                        style={[styles.badgeText, plan.is_active ? styles.badgeTextActive : styles.badgeTextInactive]}
-                      >
+                      <Text style={[styles.badgeText, plan.is_active ? styles.badgeTextActive : styles.badgeTextInactive]}>
                         {plan.is_active ? "Active" : "Inactive"}
                       </Text>
                     </View>
@@ -121,7 +127,24 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  headerInner: {
+    flex: 1,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+  },
+  newPlanButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  newPlanButtonText: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "600",
   },
   title: {
     fontSize: 22,
