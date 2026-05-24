@@ -104,6 +104,7 @@ export default function ClientDashboard() {
           plans={mealPlans}
           emptyText="No meal plans received from your coach yet."
           emptyIcon={<CalendarDays size={40} color="#d1d5db" />}
+          routePrefix="/(client)/meal-plans"
         />
 
         <PlanCard

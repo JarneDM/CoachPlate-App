@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -9,57 +9,12 @@ import {
   RefreshControl,
 } from "react-native";
 import { router } from "expo-router";
-import { supabase } from "@/lib/supabase/supabase";
-import { CalendarDays, User, Clock, ArrowRight, Plus } from "lucide-react-native";
-
-type MealPlan = {
-  id: string;
-  name: string;
-  start_date: string | null;
-  end_date: string | null;
-  is_active: boolean;
-  clients: { full_name: string } | null;
-};
+import { CalendarDays, User, Clock, ArrowRight } from "lucide-react-native";
+import { useMealPlans } from "@/hooks/useMealPlans";
+import { formatDate } from "@/utils/formatDate";
 
 export default function MealPlansScreen() {
-  const [plans, setPlans] = useState<MealPlan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  // TODO(cleanup): make custom hook
-  const fetchPlans = useCallback(async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data } = await supabase
-      .from("meal_plans")
-      .select("id, name, start_date, end_date, is_active, clients(full_name)")
-      .eq("coach_id", user.id)
-      .order("created_at", { ascending: false });
-
-    setPlans(
-      (data ?? []).map((plan) => ({
-        ...plan,
-        clients: Array.isArray(plan.clients) ? (plan.clients[0] ?? null) : plan.clients,
-      })) as MealPlan[],
-    );
-    setLoading(false);
-    setRefreshing(false);
-  }, []);
-
-  useEffect(() => {
-    fetchPlans();
-  }, [fetchPlans]);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchPlans();
-  };
-
-  // TODO(cleanup): move to utils or helpers
-  const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  const { plans, loading, refreshing, onRefresh } = useMealPlans();
 
   if (loading) {
     return (
@@ -121,7 +76,9 @@ export default function MealPlansScreen() {
                   </View>
                   <View style={styles.badgeRow}>
                     <View style={[styles.badge, plan.is_active ? styles.badgeActive : styles.badgeInactive]}>
-                      <Text style={[styles.badgeText, plan.is_active ? styles.badgeTextActive : styles.badgeTextInactive]}>
+                      <Text
+                        style={[styles.badgeText, plan.is_active ? styles.badgeTextActive : styles.badgeTextInactive]}
+                      >
                         {plan.is_active ? "Active" : "Inactive"}
                       </Text>
                     </View>

@@ -1,13 +1,11 @@
 import { Slot } from "expo-router";
 import { View, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import NavMenu from "components/NavMenu";
+import ClientNavMenu from "@/components/ClientNavMenu";
 
 export default function ClientLayout() {
   return (
     <View style={styles.container}>
-      // TODO: make nav menu for client with different options than coach
-      <NavMenu />
+      <ClientNavMenu />
       <View style={styles.content}>
         <Slot />
       </View>

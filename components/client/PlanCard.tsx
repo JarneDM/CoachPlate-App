@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { ArrowRight } from "lucide-react-native";
+import { router } from "expo-router";
 
 type Plan = {
   id: string;
@@ -14,9 +15,10 @@ type PlanCardProps = {
   plans: Plan[];
   emptyText: string;
   emptyIcon: React.ReactNode;
+  routePrefix?: string;
 };
 
-export function PlanCard({ title, icon, plans, emptyText, emptyIcon }: PlanCardProps) {
+export function PlanCard({ title, icon, plans, emptyText, emptyIcon, routePrefix }: PlanCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -35,13 +37,13 @@ export function PlanCard({ title, icon, plans, emptyText, emptyIcon }: PlanCardP
           <Text style={styles.emptyText}>{emptyText}</Text>
         </View>
       ) : (
-        // TODO: link to plan details page
         <View>
           {plans.map((plan, index) => (
             <TouchableOpacity
               key={plan.id}
               style={[styles.planRow, index === plans.length - 1 && { borderBottomWidth: 0 }]}
-              activeOpacity={0.7}
+              activeOpacity={routePrefix ? 0.7 : 1}
+              onPress={routePrefix ? () => router.push(`${routePrefix}/${plan.id}` as any) : undefined}
             >
               <View>
                 <Text style={styles.itemName}>{plan.name}</Text>
@@ -53,7 +55,7 @@ export function PlanCard({ title, icon, plans, emptyText, emptyIcon }: PlanCardP
                   })}
                 </Text>
               </View>
-              <ArrowRight size={16} color="#d1d5db" />
+              <ArrowRight size={16} color={routePrefix ? "#d1d5db" : "#e5e7eb"} />
             </TouchableOpacity>
           ))}
         </View>
