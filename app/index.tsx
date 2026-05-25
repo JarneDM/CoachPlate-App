@@ -1,8 +1,10 @@
 import { router } from "expo-router";
 import { useFonts } from "expo-font";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Clock8, BarChart2, Users } from "lucide-react-native";
+import { supabase } from "lib/supabase/supabase";
 
 const FEATURES = [
   { icon: <Clock8 size={18} color="#16a34a" />, label: "Build plans in minutes, not hours" },
@@ -14,8 +16,20 @@ export default function Index() {
   const [fontsLoaded] = useFonts({
     Geist: require("assets/fonts/Geist-VariableFont_wght.ttf"),
   });
+  const [sessionChecked, setSessionChecked] = useState(false);
 
-  if (!fontsLoaded) return null;
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const role = session.user.user_metadata?.role;
+        router.replace(role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard");
+      } else {
+        setSessionChecked(true);
+      }
+    });
+  }, []);
+
+  if (!fontsLoaded || !sessionChecked) return null;
 
   return (
     <SafeAreaView style={styles.container}>
