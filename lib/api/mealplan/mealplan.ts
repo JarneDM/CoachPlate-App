@@ -12,8 +12,14 @@ const generateMealPlan = async (clientId: string) => {
       },
       body: JSON.stringify({ clientId }),
     });
+    if (!res.ok) {
+      throw new Error(`Failed to generate meal plan: ${res.statusText}`);
+    }
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.error("Error generating meal plan:", error);
+    throw error;
   }
 }
 
