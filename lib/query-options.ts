@@ -2,6 +2,38 @@ import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/supabase";
 import type { Day, Plan, Recipe, MealPlanSummary } from "@/types/meal-plan";
 
+export type ClientSummary = {
+  id: string;
+  full_name: string;
+  goal: string | null;
+  calories_goal: number | null;
+  protein_goal: number | null;
+  carbs_goal: number | null;
+  fat_goal: number | null;
+  allergies: string[] | null;
+  preferences: string | null;
+};
+
+async function getClients(): Promise<ClientSummary[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return [];
+
+  const { data } = await supabase
+    .from("clients")
+    .select("id, full_name, goal, calories_goal, protein_goal, carbs_goal, fat_goal, allergies, preferences")
+    .eq("coach_id", user.id)
+    .order("full_name", { ascending: true });
+
+  return (data ?? []) as ClientSummary[];
+}
+
+export const clientsOptions = queryOptions({
+  queryKey: ["clients"],
+  queryFn: getClients,
+});
+
 async function getMealPlans(): Promise<MealPlanSummary[]> {
   const {
     data: { user },

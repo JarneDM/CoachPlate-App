@@ -1,3 +1,1 @@
-import { generateMealPlan } from "./mealplan/mealplan";
-
-export { generateMealPlan };
+export { generateMealPlan, saveMealPlanFromAI } from "./mealplan/mealplan";
