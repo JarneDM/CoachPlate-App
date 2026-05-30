@@ -65,7 +65,7 @@ export default function DashboardCoach() {
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>Recent clients</Text>
-            <TouchableOpacity onPress={() => router.push("/(coach)/clients" as any)}>
+            <TouchableOpacity onPress={() => router.push("/(coach)/clients/dashboard" as any)}>
               <Text style={styles.linkText}>All clients →</Text>
             </TouchableOpacity>
           </View>

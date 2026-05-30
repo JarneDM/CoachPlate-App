@@ -19,7 +19,7 @@ const DRAWER_WIDTH = Dimensions.get("window").width * 0.8;
 
 const NAV_ITEMS = [
   { href: "/(coach)/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/(coach)/clients", label: "Clients", icon: Users },
+  { href: "/(coach)/clients/dashboard", label: "Clients", icon: Users },
   { href: "/(coach)/appointments", label: "Appointments", icon: PhoneCall },
   { href: "/(coach)/meal-plans", label: "Meal Plans", icon: CalendarDays },
   { href: "/(coach)/training-plans", label: "Training Plans", icon: Dumbbell },

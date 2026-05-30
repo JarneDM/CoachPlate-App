@@ -1,38 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/supabase";
-import type { Day, Plan, Recipe, MealPlanSummary } from "@/types/meal-plan";
-
-export type ClientSummary = {
-  id: string;
-  full_name: string;
-  goal: string | null;
-  calories_goal: number | null;
-  protein_goal: number | null;
-  carbs_goal: number | null;
-  fat_goal: number | null;
-  allergies: string[] | null;
-  preferences: string | null;
-};
-
-async function getClients(): Promise<ClientSummary[]> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return [];
-
-  const { data } = await supabase
-    .from("clients")
-    .select("id, full_name, goal, calories_goal, protein_goal, carbs_goal, fat_goal, allergies, preferences")
-    .eq("coach_id", user.id)
-    .order("full_name", { ascending: true });
-
-  return (data ?? []) as ClientSummary[];
-}
-
-export const clientsOptions = queryOptions({
-  queryKey: ["clients"],
-  queryFn: getClients,
-});
+import type { Day, Plan, MealPlanSummary } from "@/types/meal-plan";
 
 async function getMealPlans(): Promise<MealPlanSummary[]> {
   const {
@@ -89,34 +57,6 @@ export const mealPlanOptions = (id: string) =>
     queryFn: () => getMealPlan(id),
     enabled: !!id,
   });
-
-async function getRecipes(): Promise<{ recipes: Recipe[]; userId: string | null }> {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { recipes: [], userId: null };
-
-  const [coachResult, publicResult] = await Promise.all([
-    supabase
-      .from("recipes")
-      .select("id, name, meal_type, calories, protein_g, carbs_g, fat_g, coach_id")
-      .eq("coach_id", user.id),
-    supabase
-      .from("recipes")
-      .select("id, name, meal_type, calories, protein_g, carbs_g, fat_g, coach_id")
-      .eq("is_public", true),
-  ]);
-
-  const all = [...(coachResult.data ?? []), ...(publicResult.data ?? [])];
-  const unique = Array.from(new Map(all.map((r) => [r.id, r])).values());
-  return { recipes: unique as Recipe[], userId: user.id };
-}
-
-export const recipesOptions = queryOptions({
-  queryKey: ["recipes"],
-  queryFn: getRecipes,
-  staleTime: 5 * 60 * 1000,
-});
 
 export async function addRecipeToMeal({
   dayId,

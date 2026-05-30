@@ -1,6 +1,6 @@
 import { getUserToken } from "@/utils/auth/token";
 import { supabase } from "@/lib/supabase/supabase";
-import type { ClientSummary } from "@/lib/query-options";
+import type { ClientSummary } from "@/types/client";
 
 export type GeneratedMeal = {
   name: string;
