@@ -29,8 +29,6 @@ export function RecipePicker({
     <Modal visible animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.sheet}>
-          <View style={styles.handle} />
-
           <View style={styles.titleRow}>
             <View>
               <Text style={styles.title}>Add recipe</Text>
@@ -123,11 +121,7 @@ export function RecipePicker({
                 </View>
               )}
 
-              <TouchableOpacity
-                onPress={() => onSelect(selected.id, servings)}
-                style={styles.confirmBtn}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity onPress={() => onSelect(selected.id, servings)} style={styles.confirmBtn} activeOpacity={0.8}>
                 <Text style={styles.confirmText}>Add to {MEAL_LABELS[mealType].toLowerCase()}</Text>
               </TouchableOpacity>
             </View>

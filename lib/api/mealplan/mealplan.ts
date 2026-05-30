@@ -1,6 +1,6 @@
 import { getUserToken } from "@/utils/auth/token";
 import { supabase } from "@/lib/supabase/supabase";
-import type { ClientSummary } from "@/types/client";
+import type { Client } from "@/types/client";
 
 export type GeneratedMeal = {
   name: string;
@@ -22,7 +22,7 @@ export type GeneratedPlan = { days: GeneratedDay[] };
 const MEAL_TYPES = ["ontbijt", "lunch", "avondeten", "snack"] as const;
 
 export const generateMealPlan = async (
-  client: ClientSummary,
+  client: Client,
   extraWishes?: string,
 ): Promise<GeneratedPlan> => {
   const token = await getUserToken();

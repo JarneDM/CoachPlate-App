@@ -1,4 +1,4 @@
-export type ClientSummary = {
+export type Client = {
   id: string;
   full_name: string;
   email: string;

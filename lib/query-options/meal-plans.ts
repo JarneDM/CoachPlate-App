@@ -1,8 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/supabase";
-import type { Day, Plan, MealPlanSummary } from "@/types/meal-plan";
+import type { Day, MealPlan } from "@/types/meal-plan";
 
-async function getMealPlans(): Promise<MealPlanSummary[]> {
+async function getMealPlans(): Promise<MealPlan[]> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -17,7 +17,7 @@ async function getMealPlans(): Promise<MealPlanSummary[]> {
   return (data ?? []).map((plan) => ({
     ...plan,
     clients: Array.isArray(plan.clients) ? (plan.clients[0] ?? null) : plan.clients,
-  })) as MealPlanSummary[];
+  })) as MealPlan[];
 }
 
 export const mealPlansOptions = queryOptions({
@@ -25,7 +25,7 @@ export const mealPlansOptions = queryOptions({
   queryFn: getMealPlans,
 });
 
-async function getMealPlan(id: string): Promise<{ plan: Plan; days: Day[] } | null> {
+async function getMealPlan(id: string): Promise<{ plan: MealPlan; days: Day[] } | null> {
   const { data: raw } = await supabase
     .from("meal_plans")
     .select(

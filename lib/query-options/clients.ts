@@ -1,8 +1,8 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/supabase";
-import type { ClientSummary } from "@/types/client";
+import type { Client } from "@/types/client";
 
-async function getClients(): Promise<ClientSummary[]> {
+async function getClients(): Promise<Client[]> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -10,7 +10,7 @@ async function getClients(): Promise<ClientSummary[]> {
 
   const { data } = await supabase.from("clients").select("*").eq("coach_id", user.id).order("created_at", { ascending: false });
 
-  return (data ?? []) as ClientSummary[];
+  return (data ?? []) as Client[];
 }
 
 export const clientsOptions = queryOptions({
