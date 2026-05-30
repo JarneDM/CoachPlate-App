@@ -30,3 +30,8 @@ export const clientByIdOptions = (id: string) => {
     queryFn: () => getClientById(id),
   });
 };
+
+export async function updateClient(id: string, fields: Partial<Omit<Client, "id">>) {
+  const { error } = await supabase.from("clients").update(fields).eq("id", id);
+  if (error) throw new Error(error.message);
+}

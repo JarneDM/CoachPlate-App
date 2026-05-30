@@ -4,7 +4,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft } from "lucide-react-native";
 import { useClientById } from "@/hooks/coach/useClientById";
 import MacroCard from "@/components/coach/clients/MacroCard";
-import styles from "./[id].styles";
+import styles from "./index.styles";
 
 function DetailClient() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -49,7 +49,7 @@ function DetailClient() {
                   </View>
                 ) : null}
               </View>
-              <TouchableOpacity style={styles.editIconBtn} activeOpacity={0.7}>
+              <TouchableOpacity onPress={() => router.push(`/(coach)/clients/${id}/edit`)} style={styles.editIconBtn} activeOpacity={0.7}>
                 <Pencil size={16} color="#9ca3af" />
               </TouchableOpacity>
             </View>
