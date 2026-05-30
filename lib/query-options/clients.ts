@@ -17,3 +17,16 @@ export const clientsOptions = queryOptions({
   queryKey: ["clients"],
   queryFn: getClients,
 });
+
+async function getClientById(id: string): Promise<Client | null> {
+  const { data } = await supabase.from("clients").select("*").eq("id", id).single();
+
+  return (data as Client) ?? null;
+}
+
+export const clientByIdOptions = (id: string) => {
+  return queryOptions({
+    queryKey: ["client", id],
+    queryFn: () => getClientById(id),
+  });
+};

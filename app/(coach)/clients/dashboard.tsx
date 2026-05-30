@@ -1,8 +1,9 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Plus, Users, ChevronRight } from "lucide-react-native";
-import { useClients } from "@/hooks/useClients";
+import { useClients } from "@/hooks/index";
 import styles from "./dashboard.styles";
+import { router } from "expo-router";
 
 export default function ClientsScreen() {
   const { clients, loading } = useClients();
@@ -36,7 +37,14 @@ export default function ClientsScreen() {
         {clients.length > 0 ? (
           <View style={styles.grid}>
             {clients.map((client) => (
-              <TouchableOpacity key={client.id} style={styles.card} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => {
+                  router.push(`/clients/${client.id}`);
+                }}
+                key={client.id}
+                style={styles.card}
+                activeOpacity={0.7}
+              >
                 <View style={styles.cardLeft}>
                   <View style={styles.avatar}>
                     <Text style={styles.avatarText}>{client.full_name.charAt(0).toUpperCase()}</Text>
