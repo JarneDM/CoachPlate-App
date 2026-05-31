@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   clientEmail: {
     fontSize: 13,
     color: "#9ca3af",
-    marginTop: 2,
   },
   goalBadge: {
     alignSelf: "flex-start",
@@ -82,6 +81,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#16a34a",
   },
+
   section: {
     backgroundColor: "#ffffff",
     borderRadius: 16,
@@ -104,6 +104,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#111827",
+  },
+
+  statGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  statItem: {
+    width: "47%",
+    backgroundColor: "#f9fafb",
+    borderRadius: 12,
+    padding: 12,
+    gap: 2,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#111827",
+  },
+  statLabel: {
+    fontSize: 11,
+    color: "#9ca3af",
+    fontWeight: "500",
   },
 
   macroGrid: {
@@ -134,10 +157,49 @@ const styles = StyleSheet.create({
     color: "#ef4444",
   },
 
+  notesBlock: {
+    gap: 4,
+  },
+  notesBlockLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#9ca3af",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+  },
   preferencesText: {
     fontSize: 13,
     color: "#374151",
     lineHeight: 20,
+  },
+
+  infoList: {
+    gap: 0,
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f3f4f6",
+  },
+  infoRowLast: {
+    borderBottomWidth: 0,
+    paddingBottom: 0,
+  },
+  infoLabel: {
+    fontSize: 13,
+    color: "#6b7280",
+    fontWeight: "500",
+  },
+  infoValue: {
+    fontSize: 13,
+    color: "#111827",
+    fontWeight: "500",
+    textAlign: "right",
+    flex: 1,
+    paddingLeft: 16,
   },
 
   emptyText: {

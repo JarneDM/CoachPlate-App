@@ -8,25 +8,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addClient, addClientWithAccount, clientsOptions } from "@/lib/query-options";
 import type { Client } from "@/types/client";
 import { AlertModal } from "@/components/AlertModal";
+import { GENDER_OPTIONS, ACTIVITY_OPTIONS } from "@/utils/client";
 import { styles } from "./add.styles";
 
 type ClientForm = {
   [K in keyof Omit<Client, "id" | "coach_id" | "user_id" | "created_at">]-?: string;
 };
-
-const GENDER_OPTIONS = [
-  { label: "Female", value: "FEMALE" },
-  { label: "Male", value: "MALE" },
-  { label: "Other", value: "OTHER" },
-];
-
-const ACTIVITY_OPTIONS = [
-  { label: "Little to no exercise", value: "SEDENTARY" },
-  { label: "Lightly active (1-3 days/week)", value: "LIGHT" },
-  { label: "Moderately active (3-5 days/week)", value: "MODERATE" },
-  { label: "Active (6-7 days/week)", value: "ACTIVE" },
-  { label: "Very active (daily intense exercise)", value: "VERY_ACTIVE" },
-];
 
 const STEP1_FIELDS: (keyof ClientForm)[] = ["full_name", "birth_date", "gender", "goal"];
 const STEP2_FIELDS: (keyof ClientForm)[] = ["weight_kg", "height_cm"];

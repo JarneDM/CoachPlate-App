@@ -1,10 +1,29 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, router } from "expo-router";
-import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft } from "lucide-react-native";
+import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft, UserRound } from "lucide-react-native";
 import { useClientById } from "@/hooks/coach/useClientById";
+import { GENDER_LABELS, ACTIVITY_LABELS } from "@/utils/client";
 import MacroCard from "@/components/coach/clients/MacroCard";
 import styles from "./index.styles";
+
+function calcBmi(weight: number | null, height: number | null): string | null {
+  if (!weight || !height) return null;
+  return (weight / Math.pow(height / 100, 2)).toFixed(1);
+}
+
+function calcAge(birthDate: string | null): number | null {
+  if (!birthDate) return null;
+  const birth = new Date(birthDate);
+  const today = new Date();
+  const age = today.getFullYear() - birth.getFullYear();
+  const beforeBirthday = today < new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
+  return beforeBirthday ? age - 1 : age;
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
 
 function DetailClient() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -26,6 +45,8 @@ function DetailClient() {
     );
   }
 
+  const bmi = calcBmi(client.weight_kg, client.height_cm);
+  const age = calcAge(client.birth_date);
   const hasMacros = client.calories_goal || client.protein_goal || client.carbs_goal || client.fat_goal;
 
   return (
@@ -41,15 +62,8 @@ function DetailClient() {
             </View>
             <View style={styles.headerInfo}>
               <View style={styles.headerText}>
-                <Text style={styles.clientName} numberOfLines={1}>
-                  {client.full_name}
-                </Text>
-                {client.email ? (
-                  <Text style={styles.clientEmail} numberOfLines={1}>
-                    {client.email}
-                  </Text>
-                ) : null}
-                {client.birth_date ? <Text style={styles.clientEmail}>{new Date(client.birth_date).toLocaleDateString()}</Text> : null}
+                <Text style={styles.clientName} numberOfLines={1}>{client.full_name}</Text>
+                {client.email ? <Text style={styles.clientEmail} numberOfLines={1}>{client.email}</Text> : null}
                 {client.goal ? (
                   <View style={styles.goalBadge}>
                     <Text style={styles.goalBadgeText}>{client.goal}</Text>
@@ -59,6 +73,27 @@ function DetailClient() {
               <TouchableOpacity onPress={() => router.push(`/(coach)/clients/${id}/edit`)} style={styles.editIconBtn} activeOpacity={0.7}>
                 <Pencil size={16} color="#9ca3af" />
               </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.statGrid}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{client.weight_kg != null ? `${client.weight_kg}` : "—"}</Text>
+              <Text style={styles.statLabel}>Weight (kg)</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{client.height_cm != null ? `${client.height_cm}` : "—"}</Text>
+              <Text style={styles.statLabel}>Height (cm)</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{bmi ?? "—"}</Text>
+              <Text style={styles.statLabel}>BMI</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{age != null ? `${age}` : "—"}</Text>
+              <Text style={styles.statLabel}>Age</Text>
             </View>
           </View>
         </View>
@@ -111,11 +146,49 @@ function DetailClient() {
             <NotebookPen size={14} color="#6b7280" />
             <Text style={styles.sectionTitle}>Preferences & notes</Text>
           </View>
-          {client.preferences ? (
-            <Text style={styles.preferencesText}>{client.preferences}</Text>
+          {client.preferences || client.notes ? (
+            <>
+              {client.preferences ? (
+                <View style={styles.notesBlock}>
+                  <Text style={styles.notesBlockLabel}>Preferences</Text>
+                  <Text style={styles.preferencesText}>{client.preferences}</Text>
+                </View>
+              ) : null}
+              {client.notes ? (
+                <View style={styles.notesBlock}>
+                  <Text style={styles.notesBlockLabel}>Notes</Text>
+                  <Text style={styles.preferencesText}>{client.notes}</Text>
+                </View>
+              ) : null}
+            </>
           ) : (
             <Text style={styles.emptyText}>No preferences or notes</Text>
           )}
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <UserRound size={14} color="#6b7280" />
+            <Text style={styles.sectionTitle}>Personal info</Text>
+          </View>
+          <View style={styles.infoList}>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Gender</Text>
+              <Text style={styles.infoValue}>{client.gender ? GENDER_LABELS[client.gender] : "—"}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Date of birth</Text>
+              <Text style={styles.infoValue}>{client.birth_date ? formatDate(client.birth_date) : "—"}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Activity level</Text>
+              <Text style={styles.infoValue}>{client.active ? (ACTIVITY_LABELS[client.active] ?? "—") : "—"}</Text>
+            </View>
+            <View style={[styles.infoRow, styles.infoRowLast]}>
+              <Text style={styles.infoLabel}>Added on</Text>
+              <Text style={styles.infoValue}>{formatDate(client.created_at)}</Text>
+            </View>
+          </View>
         </View>
 
         <View style={styles.section}>
