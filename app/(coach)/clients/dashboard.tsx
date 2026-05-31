@@ -26,7 +26,7 @@ export default function ClientsScreen() {
               {clients.length} {clients.length === 1 ? "client" : "clients"} in your list
             </Text>
           </View>
-          <TouchableOpacity activeOpacity={0.8}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => router.push("/clients/add")}>
             <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
               <Plus size={14} color="#ffffff" />
               <Text style={styles.addButtonText}>New client</Text>
@@ -76,7 +76,7 @@ export default function ClientsScreen() {
             </View>
             <Text style={styles.emptyTitle}>No clients yet</Text>
             <Text style={styles.emptySubtitle}>Add your first client to get started.</Text>
-            <TouchableOpacity activeOpacity={0.8}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => router.push("/clients/add")}>
               <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.emptyButton}>
                 <Plus size={14} color="#ffffff" />
                 <Text style={styles.emptyButtonText}>Add first client</Text>

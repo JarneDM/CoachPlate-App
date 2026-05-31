@@ -1,12 +1,21 @@
 export type Client = {
   id: string;
+  coach_id: string;
+  user_id?: string;
   full_name: string;
   email: string;
+  birth_date: string;
+  gender: string;
+  weight_kg: number;
+  height_cm: number;
   goal: string | null;
   calories_goal: number | null;
   protein_goal: number | null;
   carbs_goal: number | null;
   fat_goal: number | null;
-  allergies: string[] | null;
-  preferences: string | null;
+  allergies?: string[] | null;
+  preferences?: string | null;
+  notes?: string | null;
+  active?: string;
+  created_at: string;
 };

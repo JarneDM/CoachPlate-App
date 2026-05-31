@@ -41,8 +41,15 @@ function DetailClient() {
             </View>
             <View style={styles.headerInfo}>
               <View style={styles.headerText}>
-                <Text style={styles.clientName} numberOfLines={1}>{client.full_name}</Text>
-                {client.email ? <Text style={styles.clientEmail} numberOfLines={1}>{client.email}</Text> : null}
+                <Text style={styles.clientName} numberOfLines={1}>
+                  {client.full_name}
+                </Text>
+                {client.email ? (
+                  <Text style={styles.clientEmail} numberOfLines={1}>
+                    {client.email}
+                  </Text>
+                ) : null}
+                {client.birth_date ? <Text style={styles.clientEmail}>{new Date(client.birth_date).toLocaleDateString()}</Text> : null}
                 {client.goal ? (
                   <View style={styles.goalBadge}>
                     <Text style={styles.goalBadgeText}>{client.goal}</Text>
