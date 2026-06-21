@@ -6,7 +6,7 @@ import { ArrowLeft, Save } from "lucide-react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useClientById } from "@/hooks/coach/useClientById";
 import { updateClient, clientByIdOptions, clientsOptions } from "@/lib/query-options";
-import { styles } from "./index.styles";
+import styles from "./index.styles"
 
 function EditClient() {
   const { id } = useLocalSearchParams<{ id: string }>();

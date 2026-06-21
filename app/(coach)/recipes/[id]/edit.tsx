@@ -6,9 +6,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useForm } from "react-hook-form";
 import { useCoachRecipes } from "@/hooks/useRecipes";
 import { useUser } from "@/hooks/auth/useUser";
-import { RecipeFormFields } from "../_components/RecipeFormFields";
+import RecipeFormFields from "../_components/RecipeFormFields"
 import type { RecipeForm } from "../_components/RecipeFormFields";
-import { styles } from "../_components/recipeForm.styles";
+import styles from "../_components/recipeForm.styles"
 
 export default function EditRecipe() {
   const { id } = useLocalSearchParams<{ id: string }>();

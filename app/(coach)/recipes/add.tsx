@@ -4,9 +4,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ArrowLeft, ChefHat } from "lucide-react-native";
 import { router } from "expo-router";
 import { useForm } from "react-hook-form";
-import { RecipeFormFields } from "./_components/RecipeFormFields";
+import RecipeFormFields from "./_components/RecipeFormFields"
 import type { RecipeForm } from "./_components/RecipeFormFields";
-import { styles } from "./_components/recipeForm.styles";
+import styles from "./_components/recipeForm.styles"
 
 export default function AddRecipe() {
   const [focusedField, setFocusedField] = useState<keyof RecipeForm | null>(null);

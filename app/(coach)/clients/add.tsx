@@ -9,7 +9,7 @@ import { addClient, addClientWithAccount, clientsOptions } from "@/lib/query-opt
 import type { Client } from "@/types/client";
 import { AlertModal } from "@/components/AlertModal";
 import { GENDER_OPTIONS, ACTIVITY_OPTIONS } from "@/utils/client";
-import { styles } from "./add.styles";
+import styles from "./add.styles"
 
 type ClientForm = {
   [K in keyof Omit<Client, "id" | "coach_id" | "user_id" | "created_at">]-?: string;

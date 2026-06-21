@@ -2,7 +2,7 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { Controller } from "react-hook-form";
 import type { Control, FieldErrors } from "react-hook-form";
 import { MEAL_TYPES, MEAL_LABELS } from "@/constants/meal-plan";
-import { styles } from "./recipeForm.styles";
+import styles from "./recipeForm.styles"
 
 export type RecipeForm = {
   name: string;
@@ -20,12 +20,12 @@ type Props = {
   setFocusedField: (field: keyof RecipeForm | null) => void;
 };
 
-export function RecipeFormFields({ control, errors, focusedField, setFocusedField }: Props) {
+export default function RecipeFormFields({ control, errors, focusedField, setFocusedField }: Props) {
   const inputStyle = (field: keyof RecipeForm) => [
     styles.input,
     focusedField === field && styles.inputFocused,
     errors[field] && styles.inputError,
-  ];
+  ]
 
   return (
     <>
@@ -44,7 +44,10 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                   value={value}
                   onChangeText={onChange}
                   onFocus={() => setFocusedField("name")}
-                  onBlur={() => { onBlur(); setFocusedField(null); }}
+                  onBlur={() => {
+                    onBlur()
+                    setFocusedField(null)
+                  }}
                   placeholder="E.g. Chicken salad"
                   placeholderTextColor="#9ca3af"
                 />
@@ -65,9 +68,7 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                       onPress={() => onChange(value === type ? "" : type)}
                       activeOpacity={0.7}
                     >
-                      <Text style={[styles.optionChipText, value === type && styles.optionChipTextSelected]}>
-                        {MEAL_LABELS[type]}
-                      </Text>
+                      <Text style={[styles.optionChipText, value === type && styles.optionChipTextSelected]}>{MEAL_LABELS[type]}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -91,7 +92,10 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                   value={value}
                   onChangeText={onChange}
                   onFocus={() => setFocusedField("calories")}
-                  onBlur={() => { onBlur(); setFocusedField(null); }}
+                  onBlur={() => {
+                    onBlur()
+                    setFocusedField(null)
+                  }}
                   placeholder="E.g. 450"
                   placeholderTextColor="#9ca3af"
                   keyboardType="numeric"
@@ -111,7 +115,10 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                     value={value}
                     onChangeText={onChange}
                     onFocus={() => setFocusedField("protein_g")}
-                    onBlur={() => { onBlur(); setFocusedField(null); }}
+                    onBlur={() => {
+                      onBlur()
+                      setFocusedField(null)
+                    }}
                     placeholder="30"
                     placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
@@ -130,7 +137,10 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                     value={value}
                     onChangeText={onChange}
                     onFocus={() => setFocusedField("carbs_g")}
-                    onBlur={() => { onBlur(); setFocusedField(null); }}
+                    onBlur={() => {
+                      onBlur()
+                      setFocusedField(null)
+                    }}
                     placeholder="40"
                     placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
@@ -149,7 +159,10 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
                     value={value}
                     onChangeText={onChange}
                     onFocus={() => setFocusedField("fat_g")}
-                    onBlur={() => { onBlur(); setFocusedField(null); }}
+                    onBlur={() => {
+                      onBlur()
+                      setFocusedField(null)
+                    }}
                     placeholder="15"
                     placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
@@ -161,5 +174,5 @@ export function RecipeFormFields({ control, errors, focusedField, setFocusedFiel
         </View>
       </View>
     </>
-  );
+  )
 }
