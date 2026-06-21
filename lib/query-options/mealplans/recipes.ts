@@ -9,15 +9,9 @@ async function getRecipes(): Promise<{ recipes: Recipe[]; userId: string | null 
   if (!user) return { recipes: [], userId: null };
 
   const [coachResult, publicResult] = await Promise.all([
-    supabase
-      .from("recipes")
-      .select("id, name, meal_type, calories, protein_g, carbs_g, fat_g, coach_id")
-      .eq("coach_id", user.id),
-    supabase
-      .from("recipes")
-      .select("id, name, meal_type, calories, protein_g, carbs_g, fat_g, coach_id")
-      .eq("is_public", true),
-  ]);
+    supabase.from("recipes").select("*").eq("coach_id", user.id),
+    supabase.from("recipes").select("*").eq("is_public", true),
+  ])
 
   const all = [...(coachResult.data ?? []), ...(publicResult.data ?? [])];
   const unique = Array.from(new Map(all.map((r) => [r.id, r])).values());

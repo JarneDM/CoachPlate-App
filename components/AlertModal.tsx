@@ -7,16 +7,23 @@ type Props = {
   title: string;
   message: string;
   confirmLabel?: string;
+  cancelLabel?: string;
   onConfirm: () => void;
+  onCancel?: () => void;
 };
 
-export function AlertModal({ visible, title, message, confirmLabel = "OK", onConfirm }: Props) {
+export function AlertModal({ visible, title, message, confirmLabel = "OK", cancelLabel, onConfirm, onCancel }: Props) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onConfirm}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel ?? onConfirm}>
       <View style={styles.overlay}>
         <View style={styles.card}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.message}>{message}</Text>
+          {onCancel && cancelLabel ? (
+            <TouchableOpacity onPress={onCancel} activeOpacity={0.85} style={styles.cancelBtn}>
+              <Text style={styles.cancelBtnText}>{cancelLabel}</Text>
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity onPress={onConfirm} activeOpacity={0.85} style={styles.btn}>
             <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.gradient}>
               <Text style={styles.btnText}>{confirmLabel}</Text>
@@ -60,6 +67,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 8,
+  },
+  cancelBtn: {
+    paddingVertical: 13,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    marginTop: 4,
+  },
+  cancelBtnText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#374151",
   },
   btn: {
     borderRadius: 12,
