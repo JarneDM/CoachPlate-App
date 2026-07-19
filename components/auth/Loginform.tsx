@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Link, router } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
 import Input from "../Input";
-import { supabase } from "lib/supabase/supabase";
-import { UserTypeContext } from "@/context/UserTypeContext";
+import { loginMutationOptions } from "@/lib/query-options/auth/login";
 
 type LoginProps = {
   email: string;
@@ -23,34 +23,19 @@ function Loginform() {
     },
   });
 
-  const [loading] = useState(false);
-  const { userType } = useContext(UserTypeContext);
   const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = async (data: LoginProps) => {
-    data.email = data.email.toLowerCase();
-    try {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-      if (error) {
-        setError(error.message);
-        throw new Error("There was an error signing in: " + error.message);
-        return;
-      }
-      const role = user?.user_metadata?.role;
-      if (!role) {
-        setError("User role not found. Please contact support.");
-        throw new Error("User role not found in metadata.");
-      }
-      role === "coach" ? router.push("/(coach)/dashboard") : router.push("/(client)/dashboard");
-    } catch (error) {
-      console.error("Error signing in:", error);
-    }
+  const mutation = useMutation({
+    ...loginMutationOptions,
+    onSuccess: (data) => {
+      router.push(data.user.role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard");
+    },
+    onError: (error: Error) => setError(error.message),
+  });
+
+  const onSubmit = (data: LoginProps) => {
+    setError(null);
+    mutation.mutate({ email: data.email.toLowerCase(), password: data.password });
   };
 
   return (
@@ -96,12 +81,12 @@ function Loginform() {
         )}
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          style={[styles.button, mutation.isPending && styles.buttonDisabled]}
           onPress={handleSubmit(onSubmit)}
-          disabled={loading}
+          disabled={mutation.isPending}
           activeOpacity={0.85}
         >
-          <Text style={styles.buttonText}>{loading ? "Logging in..." : "Log in"}</Text>
+          <Text style={styles.buttonText}>{mutation.isPending ? "Logging in..." : "Log in"}</Text>
         </TouchableOpacity>
       </View>
 

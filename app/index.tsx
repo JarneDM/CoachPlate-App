@@ -5,6 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Clock8, BarChart2, Users } from "lucide-react-native";
 import { supabase } from "lib/supabase/supabase";
+import { getAuthenticatedUser } from "@/lib/auth/session"
 
 const FEATURES = [
   { icon: <Clock8 size={18} color="#16a34a" />, label: "Build plans in minutes, not hours" },
@@ -19,14 +20,26 @@ export default function Index() {
   const [sessionChecked, setSessionChecked] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        const role = session.user.user_metadata?.role;
-        router.replace(role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard");
-      } else {
-        setSessionChecked(true);
+    const checkSession = async () => {
+      const customUser = await getAuthenticatedUser()
+      if (customUser) {
+        router.replace(customUser.role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard")
+        return
       }
-    });
+
+      // const {
+      //   data: { session },
+      // } = await supabase.auth.getSession();
+      // if (session?.user) {
+      //   const role = session.user.user_metadata?.role;
+      //   router.replace(role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard");
+      //   return;
+      // }
+
+      setSessionChecked(true)
+    }
+
+    checkSession()
   }, []);
 
   if (!fontsLoaded || !sessionChecked) return null;
