@@ -1,18 +1,18 @@
 import { refreshAccessToken } from "@/lib/api/auth/refresh";
 import { clearSession, getSession, setSession } from "@/lib/auth/tokenStorage";
-import type { AuthSession, LoginResponse } from "@/types/auth";
+import type { AuthSession, AuthResponse } from "@/types/auth"
 
 const REFRESH_BUFFER_MS = 60 * 1000;
 
-export async function storeAuthSession(response: LoginResponse): Promise<AuthSession> {
+export async function storeAuthSession(response: AuthResponse): Promise<AuthSession> {
   const session: AuthSession = {
     accessToken: response.accessToken,
     refreshToken: response.refreshToken,
     expiresAt: Date.now() + response.expiresIn * 1000,
     user: response.user,
-  };
-  await setSession(session);
-  return session;
+  }
+  await setSession(session)
+  return session
 }
 
 export async function getValidAccessToken(): Promise<string | null> {

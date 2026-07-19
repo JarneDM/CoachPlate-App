@@ -11,9 +11,9 @@ export type AuthTokens = {
   expiresIn: number;
 };
 
-export type LoginResponse = AuthTokens & {
-  user: AuthUser;
-};
+export type AuthResponse = AuthTokens & {
+  user: AuthUser
+}
 
 export type RefreshResponse = AuthTokens;
 

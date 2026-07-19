@@ -5,6 +5,8 @@ import Input from "../Input";
 import { UserTypeContext } from "@/context/UserTypeContext";
 import { Controller, set, useForm } from "react-hook-form";
 import { supabase } from "@/lib/supabase/supabase";
+import { registerMutationOptions } from "@/lib/query-options/auth/register"
+import { useMutation } from "@tanstack/react-query"
 
 interface RegisterProps {
   fullName: string;
@@ -26,37 +28,29 @@ export const RegisterForm = () => {
       coachCode: "",
     },
   });
+
+  const mutation = useMutation({
+    ...registerMutationOptions,
+    onSuccess: (data) => {
+      router.push(data.user.role === "coach" ? "/(coach)/dashboard" : "/(client)/dashboard")
+    },
+    onError: (error: Error) => setError(error.message),
+  })
+
   const { userType, setUserType } = useContext(UserTypeContext);
   const [error, setError] = useState<string | null>(null);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false)
   const isDisabled = !acceptedTerms;
 
 const onSubmit = async (data: RegisterProps) => {
-  setLoading(true);
-  const email = data.email.toLowerCase();
-  const { error: authError } = await supabase.auth.signUp({
-    email: email,
-    password: data.password,
-    options: {
-      emailRedirectTo: `https://www.coachplate.com/auth/callback`,
-      data: {
-        full_name: data.fullName,
-        terms_accepted: true,
-        terms_accepted_at: acceptedTerms ? new Date().toISOString() : null,
-        terms_version: "2026-03-29",
-        role: userType,
-      },
-    },
-  });
-  if (authError) {
-    console.error("Error signing up:", authError);
-    setError(authError.message);
-    setLoading(false);
-    return;
+  setError(null)
+  const email = data.email.toLowerCase()
+
+  mutation.mutate({ email, password: data.password, name: data.fullName, role: userType, coachCode: data.coachCode })
+
+  if (mutation.isError) {
+    setError("An error occurred during registration. Please try again.")
   }
-  userType === "coach" ? router.push("/(coach)/dashboard") : router.push("/(client)/dashboard");
-  setLoading(false);
 };
 
   return (
@@ -161,7 +155,7 @@ const onSubmit = async (data: RegisterProps) => {
           disabled={isDisabled}
           activeOpacity={0.85}
         >
-          <Text style={styles.buttonText}>{loading ? "Creating account..." : "Create account"}</Text>
+          <Text style={styles.buttonText}>{mutation.isPending ? "Creating account..." : "Create account"}</Text>
         </TouchableOpacity>
       </View>
 
@@ -172,7 +166,7 @@ const onSubmit = async (data: RegisterProps) => {
         </Link>
       </Text>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
