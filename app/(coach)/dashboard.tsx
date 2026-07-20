@@ -1,43 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
-import { supabase } from "@/lib/supabase/supabase";
 import { router } from "expo-router";
-import { Hand, Users, CalendarDays, NotepadText, Sparkles } from "lucide-react-native";
+import { Users, CalendarDays, NotepadText, Sparkles } from "lucide-react-native";
 import { StatCard, QuickActionCard } from "@/components/Cards";
-
-type Coach = { id: string; full_name: string; email: string };
-type Client = { id: string; full_name: string; goal: string | null };
+import { useCoachDashboard } from "@/hooks/coach";
 
 export default function DashboardCoach() {
-  const [coach, setCoach] = useState<Coach | null>(null);
-  const [clientCount, setClientCount] = useState(0);
-  const [mealPlanCount, setMealPlanCount] = useState(0);
-  const [recentClients, setRecentClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const [coachResult, clientCountResult, mealPlanCountResult, recentClientsResult] = await Promise.all([
-        supabase.from("coaches").select("*").eq("id", user.id).single(),
-        supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
-        supabase.from("meal_plans").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
-        supabase.from("clients").select("id, full_name, goal").eq("coach_id", user.id).order("created_at", { ascending: false }).limit(3),
-      ]);
-
-      setCoach(coachResult.data);
-      setClientCount(clientCountResult.count ?? 0);
-      setMealPlanCount(mealPlanCountResult.count ?? 0);
-      setRecentClients(recentClientsResult.data ?? []);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, []);
+  const { coach, clientCount, mealPlanCount, recentClients, loading } = useCoachDashboard();
 
   if (loading) {
     return (

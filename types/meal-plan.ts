@@ -39,3 +39,20 @@ export type MealPlan = {
   clients?: Client | null;
   meal_plan_days?: Day[];
 };
+
+export type WeekPlanClient = {
+  id: string
+  full_name: string
+}
+
+export type WeekPlan = {
+  id: string
+  name: string
+  is_active: boolean
+  created_at: string
+  clients: WeekPlanClient
+}
+export type WeekPlanDashboard = {
+  weekPlans: WeekPlan[]
+  count: number
+}

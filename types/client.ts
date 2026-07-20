@@ -19,3 +19,9 @@ export type Client = {
   active?: string;
   created_at: string;
 };
+
+export type Clients = {
+  clients: Client[]
+}
+
+export type ClientSummary = Pick<Client, "id" | "full_name" | "goal">
