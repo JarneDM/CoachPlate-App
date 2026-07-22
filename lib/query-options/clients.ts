@@ -2,6 +2,8 @@ import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase/supabase";
 import type { Client } from "@/types/client";
 import { getClients } from "@/lib/api/coach/getClients"
+import { fetchWithAuth } from "../api/fetchWithAuth"
+import { ClientForm } from "@/app/(coach)/clients/add"
 
 export const clientsOptions = queryOptions({
   queryKey: ["clients"],
@@ -57,32 +59,8 @@ function mapFormToFields(form: ClientFormData) {
 }
 
 export async function addClient(form: ClientFormData) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not authenticated");
-
-  const { error } = await supabase.from("clients").insert({ coach_id: user.id, ...mapFormToFields(form) });
-  if (error) throw new Error(error.message);
-}
-
-export async function addClientWithAccount(form: ClientFormData) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session) throw new Error("Not authenticated");
-
-  const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/clients/add`, {
+  const res = await fetchWithAuth<ClientForm>(`${process.env.EXPO_PUBLIC_API_URL}/coachplate/v1/coach/client/add`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${session.access_token}`,
-    },
     body: JSON.stringify(mapFormToFields(form)),
-  });
-
-  if (!res.ok) {
-    const json = await res.json().catch(() => ({}));
-    throw new Error(json.error ?? "Failed to create client account");
-  }
+  })
 }

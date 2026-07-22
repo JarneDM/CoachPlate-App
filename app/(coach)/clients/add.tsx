@@ -11,9 +11,9 @@ import { AlertModal } from "@/components/AlertModal";
 import { GENDER_OPTIONS, ACTIVITY_OPTIONS } from "@/utils/client";
 import styles from "./add.styles"
 
-type ClientForm = {
-  [K in keyof Omit<Client, "id" | "coach_id" | "user_id" | "created_at">]-?: string;
-};
+export type ClientForm = {
+  [K in keyof Omit<Client, "id" | "coach_id" | "user_id" | "created_at">]-?: string
+}
 
 const STEP1_FIELDS: (keyof ClientForm)[] = ["full_name", "birth_date", "gender", "goal"];
 const STEP2_FIELDS: (keyof ClientForm)[] = ["weight_kg", "height_cm"];
@@ -25,23 +25,40 @@ function AddClient() {
   const [focusedField, setFocusedField] = useState<keyof ClientForm | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { control, handleSubmit, trigger, formState: { errors } } = useForm<ClientForm>({
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+  } = useForm<ClientForm>({
     defaultValues: {
-      full_name: "", email: "", birth_date: "", gender: "",
-      weight_kg: "", height_cm: "", goal: "", active: "",
-      calories_goal: "", protein_goal: "", carbs_goal: "", fat_goal: "",
-      allergies: "", preferences: "", notes: "",
+      full_name: "",
+      email: "",
+      birth_date: "",
+      gender: "",
+      weight_kg: "",
+      height_cm: "",
+      goal: "",
+      active: "",
+      calories_goal: "",
+      protein_goal: "",
+      carbs_goal: "",
+      fat_goal: "",
+      allergies: "",
+      preferences: "",
+      notes: "",
+      create_account: "false",
     },
-  });
+  })
 
   const mutation = useMutation({
-    mutationFn: (data: ClientForm) => createAccount ? addClientWithAccount(data) : addClient(data),
+    mutationFn: (data: ClientForm) => addClient(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(clientsOptions);
-      router.back();
+      queryClient.invalidateQueries(clientsOptions)
+      router.back()
     },
     onError: (error: Error) => setErrorMessage(error.message),
-  });
+  })
 
   const handleNext = async () => {
     const valid = await trigger(step === 1 ? STEP1_FIELDS : STEP2_FIELDS);
