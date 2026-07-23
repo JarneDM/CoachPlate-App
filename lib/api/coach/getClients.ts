@@ -24,3 +24,15 @@ export const getRecentClients = async () => {
     throw error
   }
 }
+
+export const getClientById = async (id: string) => {
+  try {
+    const res = await fetchWithAuth<Client>(`/coachplate/v1/coach/client/${id}`, {
+      method: "GET",
+    })
+    return res
+  } catch (error) {
+    console.error(`Failed to fetch client with id ${id}:`, error)
+    throw error
+  }
+}

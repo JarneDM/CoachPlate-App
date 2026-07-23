@@ -2,10 +2,11 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "rea
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, router } from "expo-router";
 import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft, UserRound } from "lucide-react-native";
-import { useClientById } from "@/hooks/coach/useClientById";
+import { useGetClientByIdQueryOptions } from "@/lib/query-options/coach/clients"
 import { GENDER_LABELS, ACTIVITY_LABELS } from "@/utils/client";
 import MacroCard from "@/components/coach/clients/MacroCard";
 import styles from "./index.styles";
+import { useQuery } from "@tanstack/react-query"
 
 function calcBmi(weight: number | null, height: number | null): string | null {
   if (!weight || !height) return null;
@@ -27,7 +28,7 @@ function formatDate(dateStr: string): string {
 
 function DetailClient() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { client, loading } = useClientById(id);
+  const { data: client, isLoading: loading } = useQuery(useGetClientByIdQueryOptions(id))
 
   if (loading) {
     return (

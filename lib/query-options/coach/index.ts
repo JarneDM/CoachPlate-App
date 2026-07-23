@@ -1,2 +1,2 @@
-export { getClientsQueryOptions, useGetClientsQueryOptions } from "./clients"
+export { getClientsQueryOptions, useGetClientsQueryOptions, addClientMutationOptions } from "./clients"
 export { coachDashboardOptions } from "./dashboard"

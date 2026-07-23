@@ -5,11 +5,11 @@ import { router } from "expo-router";
 import { ArrowLeft, ArrowRight, UserPlus } from "lucide-react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addClient, addClientWithAccount, clientsOptions } from "@/lib/query-options";
 import type { Client } from "@/types/client";
 import { AlertModal } from "@/components/AlertModal";
 import { GENDER_OPTIONS, ACTIVITY_OPTIONS } from "@/utils/client";
 import styles from "./add.styles"
+import { addClientMutationOptions, getClientsQueryOptions } from "@/lib/query-options/coach/clients"
 
 export type ClientForm = {
   [K in keyof Omit<Client, "id" | "coach_id" | "user_id" | "created_at">]-?: string
@@ -19,11 +19,20 @@ const STEP1_FIELDS: (keyof ClientForm)[] = ["full_name", "birth_date", "gender",
 const STEP2_FIELDS: (keyof ClientForm)[] = ["weight_kg", "height_cm"];
 
 function AddClient() {
-  const queryClient = useQueryClient();
-  const [step, setStep] = useState(1);
-  const [createAccount, setCreateAccount] = useState(false);
-  const [focusedField, setFocusedField] = useState<keyof ClientForm | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const queryClient = useQueryClient()
+  const [step, setStep] = useState(1)
+  const [createAccount, setCreateAccount] = useState(false)
+  const [focusedField, setFocusedField] = useState<keyof ClientForm | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const { mutate, isPending } = useMutation({
+    ...addClientMutationOptions,
+    onSuccess: () => {
+      queryClient.invalidateQueries(getClientsQueryOptions)
+      router.back()
+    },
+    onError: (error: Error) => setErrorMessage(error.message),
+  })
 
   const {
     control,
@@ -51,25 +60,16 @@ function AddClient() {
     },
   })
 
-  const mutation = useMutation({
-    mutationFn: (data: ClientForm) => addClient(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries(clientsOptions)
-      router.back()
-    },
-    onError: (error: Error) => setErrorMessage(error.message),
-  })
-
   const handleNext = async () => {
-    const valid = await trigger(step === 1 ? STEP1_FIELDS : STEP2_FIELDS);
-    if (valid) setStep(step + 1);
-  };
+    const valid = await trigger(step === 1 ? STEP1_FIELDS : STEP2_FIELDS)
+    if (valid) setStep(step + 1)
+  }
 
   const inputStyle = (field: keyof ClientForm) => [
     styles.input,
     focusedField === field && styles.inputFocused,
     errors[field] && styles.inputError,
-  ];
+  ]
 
   return (
     <View style={styles.container}>
@@ -99,7 +99,10 @@ function AddClient() {
                       value={value}
                       onChangeText={onChange}
                       onFocus={() => setFocusedField("full_name")}
-                      onBlur={() => { onBlur(); setFocusedField(null); }}
+                      onBlur={() => {
+                        onBlur()
+                        setFocusedField(null)
+                      }}
                       placeholder="E.g. Emma Johnson"
                       placeholderTextColor="#9ca3af"
                     />
@@ -118,7 +121,10 @@ function AddClient() {
                       value={value}
                       onChangeText={onChange}
                       onFocus={() => setFocusedField("email")}
-                      onBlur={() => { onBlur(); setFocusedField(null); }}
+                      onBlur={() => {
+                        onBlur()
+                        setFocusedField(null)
+                      }}
                       placeholder="emma@email.com"
                       placeholderTextColor="#9ca3af"
                       keyboardType="email-address"
@@ -145,7 +151,10 @@ function AddClient() {
                       value={value}
                       onChangeText={onChange}
                       onFocus={() => setFocusedField("birth_date")}
-                      onBlur={() => { onBlur(); setFocusedField(null); }}
+                      onBlur={() => {
+                        onBlur()
+                        setFocusedField(null)
+                      }}
                       placeholder="DD/MM/YYYY"
                       placeholderTextColor="#9ca3af"
                     />
@@ -163,13 +172,15 @@ function AddClient() {
                       {GENDER_OPTIONS.map((opt) => (
                         <TouchableOpacity
                           key={opt.value}
-                          style={[styles.optionChip, value === opt.value && styles.optionChipSelected, errors.gender && styles.optionChipError]}
+                          style={[
+                            styles.optionChip,
+                            value === opt.value && styles.optionChipSelected,
+                            errors.gender && styles.optionChipError,
+                          ]}
                           onPress={() => onChange(opt.value)}
                           activeOpacity={0.7}
                         >
-                          <Text style={[styles.optionChipText, value === opt.value && styles.optionChipTextSelected]}>
-                            {opt.label}
-                          </Text>
+                          <Text style={[styles.optionChipText, value === opt.value && styles.optionChipTextSelected]}>{opt.label}</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -188,7 +199,10 @@ function AddClient() {
                       value={value}
                       onChangeText={onChange}
                       onFocus={() => setFocusedField("goal")}
-                      onBlur={() => { onBlur(); setFocusedField(null); }}
+                      onBlur={() => {
+                        onBlur()
+                        setFocusedField(null)
+                      }}
                       placeholder="E.g. Fat loss"
                       placeholderTextColor="#9ca3af"
                     />
@@ -217,7 +231,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("weight_kg")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="72.5"
                           placeholderTextColor="#9ca3af"
                           keyboardType="decimal-pad"
@@ -237,7 +254,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("height_cm")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="178"
                           placeholderTextColor="#9ca3af"
                           keyboardType="decimal-pad"
@@ -292,7 +312,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("calories_goal")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="2200"
                           placeholderTextColor="#9ca3af"
                           keyboardType="numeric"
@@ -311,7 +334,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("protein_goal")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="150"
                           placeholderTextColor="#9ca3af"
                           keyboardType="numeric"
@@ -332,7 +358,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("carbs_goal")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="220"
                           placeholderTextColor="#9ca3af"
                           keyboardType="numeric"
@@ -351,7 +380,10 @@ function AddClient() {
                           value={value}
                           onChangeText={onChange}
                           onFocus={() => setFocusedField("fat_goal")}
-                          onBlur={() => { onBlur(); setFocusedField(null); }}
+                          onBlur={() => {
+                            onBlur()
+                            setFocusedField(null)
+                          }}
                           placeholder="70"
                           placeholderTextColor="#9ca3af"
                           keyboardType="numeric"
@@ -376,7 +408,10 @@ function AddClient() {
                         value={value}
                         onChangeText={onChange}
                         onFocus={() => setFocusedField("allergies")}
-                        onBlur={() => { onBlur(); setFocusedField(null); }}
+                        onBlur={() => {
+                          onBlur()
+                          setFocusedField(null)
+                        }}
                         placeholder="Gluten, Lactose"
                         placeholderTextColor="#9ca3af"
                       />
@@ -394,7 +429,10 @@ function AddClient() {
                         value={value}
                         onChangeText={onChange}
                         onFocus={() => setFocusedField("preferences")}
-                        onBlur={() => { onBlur(); setFocusedField(null); }}
+                        onBlur={() => {
+                          onBlur()
+                          setFocusedField(null)
+                        }}
                         placeholder="E.g. vegetarian, quick meals"
                         placeholderTextColor="#9ca3af"
                         multiline
@@ -413,7 +451,10 @@ function AddClient() {
                         value={value}
                         onChangeText={onChange}
                         onFocus={() => setFocusedField("notes")}
-                        onBlur={() => { onBlur(); setFocusedField(null); }}
+                        onBlur={() => {
+                          onBlur()
+                          setFocusedField(null)
+                        }}
                         placeholder="Lifestyle, training, medical info…"
                         placeholderTextColor="#9ca3af"
                         multiline
@@ -441,11 +482,11 @@ function AddClient() {
             <TouchableOpacity
               style={styles.addButtonWrapper}
               activeOpacity={0.8}
-              onPress={handleSubmit((data) => mutation.mutate(data))}
-              disabled={mutation.isPending}
+              onPress={handleSubmit((data) => mutate({ ...data, create_account: String(createAccount) }))}
+              disabled={isPending}
             >
               <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addButton}>
-                {mutation.isPending ? (
+                {isPending ? (
                   <ActivityIndicator size="small" color="#ffffff" />
                 ) : (
                   <>
@@ -465,7 +506,7 @@ function AddClient() {
         onConfirm={() => setErrorMessage(null)}
       />
     </View>
-  );
+  )
 }
 
 export default AddClient;
