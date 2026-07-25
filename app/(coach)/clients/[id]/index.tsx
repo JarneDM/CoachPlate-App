@@ -2,11 +2,12 @@ import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "rea
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, router } from "expo-router";
 import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft, UserRound } from "lucide-react-native";
-import { useGetClientByIdQueryOptions } from "@/lib/query-options/coach/clients"
+import { useGetClientByIdQueryOptions, deleteClientMutationOptions, getClientsQueryOptions } from "@/lib/query-options/coach/clients"
 import { GENDER_LABELS, ACTIVITY_LABELS } from "@/utils/client";
 import MacroCard from "@/components/coach/clients/MacroCard";
 import styles from "./index.styles";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { deleteClientById } from "@/lib/api/coach/getClients"
 
 function calcBmi(weight: number | null, height: number | null): string | null {
   if (!weight || !height) return null;
@@ -29,6 +30,15 @@ function formatDate(dateStr: string): string {
 function DetailClient() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: client, isLoading: loading } = useQuery(useGetClientByIdQueryOptions(id))
+  const queryClient = useQueryClient()
+
+  const { mutate, isPending } = useMutation({
+    ...deleteClientMutationOptions,
+    onSuccess: () => {
+      queryClient.invalidateQueries(getClientsQueryOptions)
+      router.back()
+    },
+  })
 
   if (loading) {
     return (
@@ -63,17 +73,28 @@ function DetailClient() {
             </View>
             <View style={styles.headerInfo}>
               <View style={styles.headerText}>
-                <Text style={styles.clientName} numberOfLines={1}>{client.full_name}</Text>
-                {client.email ? <Text style={styles.clientEmail} numberOfLines={1}>{client.email}</Text> : null}
+                <Text style={styles.clientName} numberOfLines={1}>
+                  {client.full_name}
+                </Text>
+                {client.email ? (
+                  <Text style={styles.clientEmail} numberOfLines={1}>
+                    {client.email}
+                  </Text>
+                ) : null}
                 {client.goal ? (
                   <View style={styles.goalBadge}>
                     <Text style={styles.goalBadgeText}>{client.goal}</Text>
                   </View>
                 ) : null}
               </View>
-              <TouchableOpacity onPress={() => router.push(`/(coach)/clients/${id}/edit`)} style={styles.editIconBtn} activeOpacity={0.7}>
-                <Pencil size={16} color="#9ca3af" />
-              </TouchableOpacity>
+              <View style={styles.headerActions}>
+                <TouchableOpacity onPress={() => router.push(`/(coach)/clients/${id}/edit`)} style={styles.editIconBtn} activeOpacity={0.7}>
+                  <Pencil size={16} color="#9ca3af" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => mutate(id)} style={styles.deleteIconBtn} activeOpacity={0.7}>
+                  <Text style={styles.deleteIconBtnText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -214,7 +235,7 @@ function DetailClient() {
         </View>
       </ScrollView>
     </View>
-  );
+  )
 }
 
 export default DetailClient;

@@ -41,9 +41,23 @@ const styles = StyleSheet.create({
     minWidth: 0,
     gap: 2,
   },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   editIconBtn: {
     padding: 4,
-    marginLeft: 8,
+  },
+  deleteIconBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 4,
+  },
+  deleteIconBtnText: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#ef4444",
   },
   avatar: {
     width: 64,

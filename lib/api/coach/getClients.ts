@@ -36,3 +36,15 @@ export const getClientById = async (id: string) => {
     throw error
   }
 }
+
+export const deleteClientById = async (id: string) => {
+  try {
+    const res = await fetchWithAuth(`/coachplate/v1/coach/client/${id}`, {
+      method: "DELETE",
+    })
+    return res
+  } catch (error) {
+    console.error(`Failed to delete client with id ${id}:`, error)
+    throw error
+  }
+}

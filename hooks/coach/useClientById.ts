@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { clientByIdOptions } from "@/lib/query-options";
+import { getClientByIdQueryOptions } from "@/lib/query-options"
 
 export const useClientById = (id: string) => {
-  const { data, isLoading } = useQuery(clientByIdOptions(id));
+  const { data, isLoading } = useQuery(getClientByIdQueryOptions(id))
 
   return {
     client: data,

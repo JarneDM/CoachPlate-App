@@ -5,7 +5,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { ArrowLeft, Save } from "lucide-react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useClientById } from "@/hooks/coach/useClientById";
-import { updateClient, clientByIdOptions, clientsOptions } from "@/lib/query-options";
+import { updateClient, getClientByIdQueryOptions, clientsOptions } from "@/lib/query-options"
 import styles from "./index.styles"
 
 function EditClient() {
@@ -39,7 +39,7 @@ function EditClient() {
         preferences: preferences.trim() || null,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries(clientByIdOptions(id));
+      queryClient.invalidateQueries(getClientByIdQueryOptions(id))
       queryClient.invalidateQueries(clientsOptions);
       router.back();
     },
