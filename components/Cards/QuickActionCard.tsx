@@ -1,15 +1,26 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Href, router } from "expo-router"
 
-export default function QuickActionCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+export default function QuickActionCard({
+  icon,
+  title,
+  description,
+  path,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+  path: Href
+}) {
   return (
-    <TouchableOpacity style={styles.quickAction} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.quickAction} activeOpacity={0.7} onPress={() => router.push(path)}>
       <View style={styles.quickActionIcon}>{icon}</View>
       <View>
         <Text style={styles.quickActionTitle}>{title}</Text>
         <Text style={styles.quickActionDesc}>{description}</Text>
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({

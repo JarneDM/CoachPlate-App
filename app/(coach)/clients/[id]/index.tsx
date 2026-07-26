@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, router } from "expo-router";
-import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft, UserRound } from "lucide-react-native";
+import { Target, TriangleAlert, NotebookPen, CalendarDays, Bot, Pencil, ArrowLeft, UserRound, Trash2 } from "lucide-react-native"
 import { useGetClientByIdQueryOptions, deleteClientMutationOptions, getClientsQueryOptions } from "@/lib/query-options/coach/clients"
 import { GENDER_LABELS, ACTIVITY_LABELS } from "@/utils/client";
 import MacroCard from "@/components/coach/clients/MacroCard";
@@ -92,7 +92,7 @@ function DetailClient() {
                   <Pencil size={16} color="#9ca3af" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => mutate(id)} style={styles.deleteIconBtn} activeOpacity={0.7}>
-                  <Text style={styles.deleteIconBtnText}>Delete</Text>
+                  <Trash2 size={16} color="#9ca3af" />
                 </TouchableOpacity>
               </View>
             </View>

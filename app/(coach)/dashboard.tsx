@@ -52,12 +52,12 @@ export default function DashboardCoach() {
                       <Text style={styles.clientGoal}>{client.goal ?? "No goal set"}</Text>
                     </View>
                   </View>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => router.push(`/(coach)/clients/${client.id}`)}>
                     <Text style={styles.linkText}>View →</Text>
                   </TouchableOpacity>
                 </View>
               ))}
-              <TouchableOpacity style={styles.addButton}>
+              <TouchableOpacity style={styles.addButton} onPress={() => router.push("/(coach)/clients/add")}>
                 <Text style={styles.addButtonText}>Add a client</Text>
               </TouchableOpacity>
             </View>
@@ -73,14 +73,34 @@ export default function DashboardCoach() {
         </View>
 
         <View style={styles.actionsGrid}>
-          <QuickActionCard icon={<Users size={18} color="#15803d" />} title="New client" description="Add a client" />
-          <QuickActionCard icon={<CalendarDays size={18} color="#15803d" />} title="New meal plan" description="Create a meal plan" />
-          <QuickActionCard icon={<NotepadText size={18} color="#15803d" />} title="New recipe" description="Add a recipe" />
-          <QuickActionCard icon={<Sparkles size={18} color="#15803d" />} title="AI meal plan" description="Generate with AI" />
+          <QuickActionCard
+            icon={<Users size={18} color="#15803d" />}
+            title="New client"
+            description="Add a client"
+            path="/(coach)/clients/add"
+          />
+          <QuickActionCard
+            icon={<CalendarDays size={18} color="#15803d" />}
+            title="New meal plan"
+            description="Create a meal plan"
+            path="/(coach)/meal-plans/new"
+          />
+          <QuickActionCard
+            icon={<NotepadText size={18} color="#15803d" />}
+            title="New recipe"
+            description="Add a recipe"
+            path="/(coach)/recipes/add"
+          />
+          <QuickActionCard
+            icon={<Sparkles size={18} color="#15803d" />}
+            title="AI meal plan"
+            description="Generate with AI"
+            path="/(coach)/meal-plans/new/ai"
+          />
         </View>
       </ScrollView>
     </View>
-  );
+  )
 }
 
 
