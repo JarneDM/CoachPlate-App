@@ -7,7 +7,7 @@ export type Appointment = {
   start_time: string
   end_time: string
   type: string
-  status: "open" | "scheduled" | "completed" | "canceled" | "no_show"
+  status: "open" | "scheduled" | "completed" | "cancelled" | "no_show"
   notes: string | null
   meeting_url: string
   created_at: string
