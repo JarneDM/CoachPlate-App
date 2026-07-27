@@ -4,12 +4,14 @@ import { CalendarClock } from "lucide-react-native";
 import type { Appointment } from "@/types/appointment";
 import AppointmentCard from "./_components/AppointmentCard";
 import styles from "./index.styles";
+import { useRouter } from "expo-router"
 
 function Appointments() {
   const appointments = useGetAppointmentsQueryOptions();
+  const router = useRouter()
   const count = appointments.data?.length ?? 0;
 
-  const renderItem = ({ item }: { item: Appointment }) => <AppointmentCard appointment={item} />;
+  const renderItem = ({ item }: { item: Appointment }) => <AppointmentCard appointment={item} />
 
   if (appointments.isLoading) {
     return (

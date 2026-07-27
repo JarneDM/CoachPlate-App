@@ -3,34 +3,20 @@ import { Clock } from "lucide-react-native";
 import type { Appointment } from "@/types/appointment";
 import { formatDate } from "@/utils/formatDate";
 import styles from "./AppointmentCard.styles";
-
-const STATUS_COLORS: Record<Appointment["status"], string> = {
-  open: "#16a34a",
-  scheduled: "#2563eb",
-  completed: "#6b7280",
-  canceled: "#ef4444",
-  no_show: "#f59e0b",
-};
-
-const STATUS_LABELS: Record<Appointment["status"], string> = {
-  open: "Open",
-  scheduled: "Scheduled",
-  completed: "Completed",
-  canceled: "Canceled",
-  no_show: "No show",
-};
+import { useRouter } from "expo-router"
+import { STATUS_COLORS, STATUS_LABELS } from "@/utils/appointment";
 
 type Props = {
-  appointment: Appointment;
-  onPress?: () => void;
-};
+  appointment: Appointment
+}
 
-export default function AppointmentCard({ appointment, onPress }: Props) {
-  const statusColor = STATUS_COLORS[appointment.status];
-  const initial = appointment.client.full_name.charAt(0).toUpperCase();
+export default function AppointmentCard({ appointment }: Props) {
+  const statusColor = STATUS_COLORS[appointment.status]
+  const initial = appointment.client.full_name.charAt(0).toUpperCase()
+  const router = useRouter()
 
   return (
-    <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={onPress} disabled={!onPress}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/(coach)/appointments/${appointment.id}`)}>
       <View style={styles.left}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{initial}</Text>
@@ -41,9 +27,7 @@ export default function AppointmentCard({ appointment, onPress }: Props) {
               {appointment.client.full_name}
             </Text>
             <View style={[styles.statusBadge, { backgroundColor: statusColor + "1a" }]}>
-              <Text style={[styles.statusBadgeText, { color: statusColor }]}>
-                {STATUS_LABELS[appointment.status]}
-              </Text>
+              <Text style={[styles.statusBadgeText, { color: statusColor }]}>{STATUS_LABELS[appointment.status]}</Text>
             </View>
           </View>
           <Text style={styles.type} numberOfLines={1}>
@@ -60,5 +44,5 @@ export default function AppointmentCard({ appointment, onPress }: Props) {
         </View>
       </View>
     </TouchableOpacity>
-  );
+  )
 }

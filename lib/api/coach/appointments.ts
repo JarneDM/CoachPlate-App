@@ -12,3 +12,15 @@ export const getAppointments = async () => {
     return []
   }
 }
+
+export const getAppointmentById = async (id: string) => {
+  try {
+    const res = await fetchWithAuth<{ appointment: Appointment }>(`/coachplate/v1/coach/appointment/${id}`, {
+      method: "GET",
+    })
+    return res.appointment
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
