@@ -3,10 +3,10 @@ import type { Appointment } from "@/types/appointment"
 
 export const getAppointments = async () => {
   try {
-    const res = await fetchWithAuth<Appointment[]>("/coachplate/v1/coach/appointments", {
+    const res = await fetchWithAuth<{ appointments: Appointment[] }>("/coachplate/v1/coach/appointments", {
       method: "GET",
     })
-    return res
+    return res.appointments
   } catch (error) {
     console.error(error)
     return []
