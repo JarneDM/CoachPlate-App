@@ -1,4 +1,5 @@
 import type { Client } from "@/types/client";
+import { ClientResponse } from "./clientResponse"
 
 export type Recipe = {
   id: string;
@@ -40,17 +41,12 @@ export type MealPlan = {
   meal_plan_days?: Day[];
 };
 
-export type WeekPlanClient = {
-  id: string
-  full_name: string
-}
-
 export type WeekPlan = {
   id: string
   name: string
   is_active: boolean
   created_at: string
-  clients: WeekPlanClient
+  clients: ClientResponse
 }
 export type WeekPlanDashboard = {
   weekPlans: WeekPlan[]
