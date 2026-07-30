@@ -1,5 +1,5 @@
 import { mutationOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query"
-import { addAppointment, editAppointment, getAppointmentById, getAppointments } from "@/lib/api/coach/appointments"
+import { addAppointment, deleteAppointment, editAppointment, getAppointmentById, getAppointments } from "@/lib/api/coach/appointments"
 import { Appointment, NewAppointment } from "@/types/appointment"
 
 export const getAppointmentsQueryOptions = queryOptions({
@@ -42,4 +42,15 @@ export const editAppointmentMutationOptions = (id: string, data: Partial<Appoint
 
 export const useEditAppointmentMutationOptions = (id: string, data: Partial<Appointment>) => {
   return useMutation(editAppointmentMutationOptions(id, data))
+}
+
+export const deleteAppointmentMutationOptions = (id: string) => {
+  return mutationOptions({
+    mutationKey: ["delete-appointment", id],
+    mutationFn: () => deleteAppointment(id),
+  })
+}
+
+export const useDeleteAppointmentMutationOptions = (id: string) => {
+  return useMutation(deleteAppointmentMutationOptions(id))
 }

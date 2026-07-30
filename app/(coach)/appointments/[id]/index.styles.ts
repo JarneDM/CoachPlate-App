@@ -170,6 +170,22 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#ffffff",
   },
-});
+  deleteButton: {
+    borderWidth: 1,
+    borderColor: "#ef4444",
+    backgroundColor: "#FF0000",
+    borderRadius: 12,
+    marginTop: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+  },
+  deleteButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#ffffff",
+    textAlign: "center",
+  },
+})
 
 export default styles;

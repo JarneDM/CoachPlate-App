@@ -27,11 +27,16 @@ export const getAppointmentById = async (id: string) => {
 }
 
 export const addAppointment = async (data: NewAppointment) => {
-  const res = await fetchWithAuth<{ appointment: Appointment }>("/coachplate/v1/coach/appointments/add", {
+  const payload = {
+    ...data,
+    notes: data.notes.trim() || null,
+    meeting_url: data.meeting_url.trim() || null,
+  }
+  const res = await fetchWithAuth<{ id: string }>("/coachplate/v1/coach/appointments/add", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   })
-  return res.appointment
+  return res.id
 }
 
 export const editAppointment = async (id: string, data: Partial<Appointment>) => {
@@ -46,4 +51,10 @@ export const editAppointment = async (id: string, data: Partial<Appointment>) =>
     console.error(error)
     return null
   }
+}
+
+export const deleteAppointment = async (id: string) => {
+  await fetchWithAuth<number>(`/coachplate/v1/coach/appointments/${id}`, {
+    method: "DELETE",
+  })
 }

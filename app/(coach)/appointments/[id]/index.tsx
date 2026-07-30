@@ -1,15 +1,35 @@
+import { useState } from "react"
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, router } from "expo-router"
 import { ArrowLeft, Clock, CalendarDays, NotebookPen, Video, Pencil } from "lucide-react-native"
-import { useGetAppointmentByIdQueryOptions } from "@/lib/query-options/appointments/appointments"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  deleteAppointmentMutationOptions,
+  getAppointmentsQueryOptions,
+  getAppointmentByIdQueryOptions,
+  useGetAppointmentByIdQueryOptions,
+} from "@/lib/query-options/appointments/appointments"
+import { AlertModal } from "@/components/AlertModal"
 import { STATUS_COLORS, STATUS_LABELS } from "@/utils/appointment"
 import { formatDate } from "@/utils/formatDate"
 import styles from "./index.styles"
 
 function AppointmentDetails() {
   const { id } = useLocalSearchParams<{ id: string }>()
+  const queryClient = useQueryClient()
   const { data: appointment, isLoading } = useGetAppointmentByIdQueryOptions(id)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const { mutate: deleteAppointment, isPending: isDeleting } = useMutation({
+    ...deleteAppointmentMutationOptions(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(getAppointmentsQueryOptions)
+      queryClient.removeQueries({ queryKey: getAppointmentByIdQueryOptions(id).queryKey })
+      router.push("/(coach)/appointments")
+    },
+    onError: (error: Error) => setErrorMessage(error.message),
+  })
 
   if (isLoading) {
     return (
@@ -106,7 +126,28 @@ function AppointmentDetails() {
             </TouchableOpacity>
           </View>
         ) : null}
+
+        <View>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            activeOpacity={0.8}
+            onPress={() => deleteAppointment()}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <ActivityIndicator size="small" color="#ef4444" />
+            ) : (
+              <Text style={styles.deleteButtonText}>Delete Appointment</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </ScrollView>
+      <AlertModal
+        visible={!!errorMessage}
+        title="Something went wrong"
+        message={errorMessage ?? ""}
+        onConfirm={() => setErrorMessage(null)}
+      />
     </View>
   )
 }
