@@ -1,5 +1,6 @@
 import { mutationOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query"
-import { getAppointmentById, getAppointments } from "@/lib/api/coach/appointments"
+import { editAppointment, getAppointmentById, getAppointments } from "@/lib/api/coach/appointments"
+import { Appointment } from "@/types/appointment"
 
 export const getAppointmentsQueryOptions = queryOptions({
   queryKey: ["appointments"],
@@ -19,4 +20,15 @@ export const getAppointmentByIdQueryOptions = (id: string) => {
 
 export const useGetAppointmentByIdQueryOptions = (id: string) => {
   return useQuery(getAppointmentByIdQueryOptions(id))
+}
+
+export const editAppointmentMutationOptions = (id: string, data: Partial<Appointment>) => {
+  return mutationOptions({
+    mutationKey: ["edit-appointment", id],
+    mutationFn: () => editAppointment(id, data),
+  })
+}
+
+export const useEditAppointmentMutationOptions = (id: string, data: Partial<Appointment>) => {
+  return useMutation(editAppointmentMutationOptions(id, data))
 }
