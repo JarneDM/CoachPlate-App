@@ -19,19 +19,19 @@ export default function AppointmentCard({ appointment }: Props) {
     <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/(coach)/appointments/${appointment.id}`)}>
       <View style={styles.left}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{initial}</Text>
+          <Text style={styles.avatarText}>{initial ? initial : "?"}</Text>
         </View>
         <View style={styles.info}>
           <View style={styles.nameRow}>
             <Text style={styles.name} numberOfLines={1}>
-              {appointment.client.full_name}
+              {appointment.client.full_name ? appointment.client.full_name : "No client"}
             </Text>
             <View style={[styles.statusBadge, { backgroundColor: statusColor + "1a" }]}>
               <Text style={[styles.statusBadgeText, { color: statusColor }]}>{STATUS_LABELS[appointment.status]}</Text>
             </View>
           </View>
           <Text style={styles.type} numberOfLines={1}>
-            {appointment.type}
+            {appointment.type ? appointment.type : "No type"}
           </Text>
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>

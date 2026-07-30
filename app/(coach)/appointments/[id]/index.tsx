@@ -38,25 +38,21 @@ function AppointmentDetails() {
             <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
               <ArrowLeft size={18} color="#374151" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push(`/(coach)/appointments/${id}/edit`)}
-              style={styles.editBtn}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity onPress={() => router.push(`/(coach)/appointments/${id}/edit`)} style={styles.editBtn} activeOpacity={0.7}>
               <Pencil size={16} color="#374151" />
               <Text style={styles.editBtnText}>Edit</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.headerLeft}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{initial}</Text>
+              <Text style={styles.avatarText}>{initial ? initial : "?"}</Text>
             </View>
             <View style={styles.headerInfo}>
               <Text style={styles.clientName} numberOfLines={1}>
-                {appointment.client.full_name}
+                {appointment.client.full_name ? appointment.client.full_name : "No client"}
               </Text>
               <Text style={styles.appointmentType} numberOfLines={1}>
-                {appointment.type}
+                {appointment.type ? appointment.type : "No type"}
               </Text>
               <View style={[styles.statusBadge, { backgroundColor: statusColor + "1a" }]}>
                 <Text style={[styles.statusBadgeText, { color: statusColor }]}>{STATUS_LABELS[appointment.status]}</Text>

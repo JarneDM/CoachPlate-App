@@ -13,3 +13,14 @@ export type Appointment = {
   created_at: string
   updated_at: string
 }
+
+export type NewAppointment = {
+  client_id: string
+  date: string
+  start_time: string
+  end_time: string
+  type: string
+  status: Appointment["status"]
+  notes: string
+  meeting_url: string
+}
