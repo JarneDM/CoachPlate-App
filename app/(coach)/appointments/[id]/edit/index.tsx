@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, router } from "expo-router"
 import { ArrowLeft, Save } from "lucide-react-native"
 import { useForm, Controller } from "react-hook-form"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   useGetAppointmentByIdQueryOptions,
   getAppointmentsQueryOptions,
@@ -15,8 +15,11 @@ import { AlertModal } from "@/components/AlertModal"
 import { STATUS_LABELS } from "@/utils/appointment"
 import type { Appointment } from "@/types/appointment"
 import styles from "./index.styles"
+import { ClientPicker } from "../../add/_components"
+import { getClientsQueryOptions } from "@/lib/query-options/coach/clients"
 
 type AppointmentForm = {
+  client_id: string
   date: string
   start_time: string
   end_time: string
@@ -34,6 +37,8 @@ function EditAppointmentPage() {
   const { data: appointment, isLoading } = useGetAppointmentByIdQueryOptions(id)
   const [focusedField, setFocusedField] = useState<keyof AppointmentForm | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { data: clients = [], isLoading: isLoadingClients } = useQuery(getClientsQueryOptions)
+  
 
   const {
     control,
@@ -43,6 +48,7 @@ function EditAppointmentPage() {
     formState: { errors },
   } = useForm<AppointmentForm>({
     defaultValues: {
+      client_id: appointment?.client.id ?? "",
       date: "",
       start_time: "",
       end_time: "",
@@ -56,6 +62,7 @@ function EditAppointmentPage() {
   useEffect(() => {
     if (appointment) {
       reset({
+        client_id: appointment.client.id,
         date: appointment.date,
         start_time: appointment.start_time,
         end_time: appointment.end_time,
@@ -110,6 +117,18 @@ function EditAppointmentPage() {
 
         <View style={styles.titleRow}>
           <Text style={styles.pageTitle}>Edit appointment</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Client</Text>
+          <Controller
+            control={control}
+            name="client_id"
+            rules={{ required: true }}
+            render={({ field: { onChange, value } }) => (
+              <ClientPicker clients={clients} value={value} onChange={onChange} error={!!errors.client_id} />
+            )}
+          />
         </View>
 
         <View style={styles.section}>
