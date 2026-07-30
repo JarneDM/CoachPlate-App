@@ -1,10 +1,11 @@
 import { useGetAppointmentsQueryOptions } from "@/lib/query-options/appointments/appointments";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
-import { CalendarClock } from "lucide-react-native";
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from "react-native"
+import { CalendarClock, Plus } from "lucide-react-native"
 import type { Appointment } from "@/types/appointment";
 import AppointmentCard from "./_components/AppointmentCard";
 import styles from "./index.styles";
 import { useRouter } from "expo-router"
+import { LinearGradient } from "expo-linear-gradient"
 
 function Appointments() {
   const appointments = useGetAppointmentsQueryOptions();
@@ -30,6 +31,12 @@ function Appointments() {
             {count} {count === 1 ? "appointment" : "appointments"}
           </Text>
         </View>
+        <TouchableOpacity style={styles.addBtn} onPress={() => router.push("/(coach)/appointments/add")} activeOpacity={0.8}>
+          <LinearGradient colors={["#15803d", "#16a34a"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.addBtn}>
+            <Plus size={14} color="#ffffff" />
+            <Text style={styles.addBtnText}>Add</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
 
       {appointments.isError ? (
@@ -56,7 +63,7 @@ function Appointments() {
         />
       )}
     </View>
-  );
+  )
 }
 
 export default Appointments;
