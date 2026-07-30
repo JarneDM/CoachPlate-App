@@ -27,9 +27,10 @@ export const getAppointmentById = async (id: string) => {
 
 export const editAppointment = async (id: string, data: Partial<Appointment>) => {
   try {
-    const res = await fetchWithAuth<{ appointment: Appointment }>(`/coachplate/v1/coach/appointment/${id}`, {
+    const app = { id, ...data }
+    const res = await fetchWithAuth<{ appointment: Appointment }>(`/coachplate/v1/coach/appointments/edit`, {
       method: "PUT",
-      body: JSON.stringify(data),
+      body: JSON.stringify(app),
     })
     return res.appointment
   } catch (error) {

@@ -26,9 +26,30 @@ const styles = StyleSheet.create({
   header: {
     gap: 16,
   },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   backBtn: {
     padding: 4,
     alignSelf: "flex-start",
+  },
+  editBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    backgroundColor: "#ffffff",
+  },
+  editBtnText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#374151",
   },
   headerLeft: {
     flexDirection: "row",

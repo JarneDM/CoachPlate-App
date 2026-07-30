@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { useLocalSearchParams, router } from "expo-router"
-import { ArrowLeft, Clock, CalendarDays, NotebookPen, Video } from "lucide-react-native"
+import { ArrowLeft, Clock, CalendarDays, NotebookPen, Video, Pencil } from "lucide-react-native"
 import { useGetAppointmentByIdQueryOptions } from "@/lib/query-options/appointments/appointments"
 import { STATUS_COLORS, STATUS_LABELS } from "@/utils/appointment"
 import { formatDate } from "@/utils/formatDate"
@@ -34,9 +34,19 @@ function AppointmentDetails() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
-            <ArrowLeft size={18} color="#374151" />
-          </TouchableOpacity>
+          <View style={styles.topRow}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backBtn} activeOpacity={0.7}>
+              <ArrowLeft size={18} color="#374151" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push(`/(coach)/appointments/${id}/edit`)}
+              style={styles.editBtn}
+              activeOpacity={0.7}
+            >
+              <Pencil size={16} color="#374151" />
+              <Text style={styles.editBtnText}>Edit</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.headerLeft}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{initial}</Text>
