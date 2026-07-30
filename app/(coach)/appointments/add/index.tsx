@@ -15,6 +15,8 @@ import styles from "./index.styles"
 
 const STATUS_OPTIONS = Object.entries(STATUS_LABELS) as [Appointment["status"], string][]
 
+// TODO: use something else for the date and times
+
 function AddAppointment() {
   const queryClient = useQueryClient()
   const { data: clients = [], isLoading: isLoadingClients } = useQuery(getClientsQueryOptions)

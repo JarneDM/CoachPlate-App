@@ -18,6 +18,8 @@ import styles from "./index.styles"
 import { ClientPicker } from "../../add/_components"
 import { getClientsQueryOptions } from "@/lib/query-options/coach/clients"
 
+// TODO: use something else for the date and times
+
 type AppointmentForm = {
   client_id: string
   date: string
